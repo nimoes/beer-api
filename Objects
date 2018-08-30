@@ -1,0 +1,52 @@
+Beer = {
+          "id": "105873",
+          "name": "Good People Snake Handler",
+          "description": "A big, joyous celebration of all things hoppy (5 different varities). Large flavors and aroma of pine, citrus, flowers, spice, pineapple, and grassiness complimented with a touch of biscuit and caramel backbone. Our most requested beer.",
+          "brewer": {
+            "id": "9621",
+            "zip": 35205,
+            },
+          },
+          "abv": 9.300000190734863,
+          "ibu": 103,
+          "calories": 279,
+          "seasonal": "UNKNOWN",
+          "availability": {
+            "bottle": "available",
+            "tap": "unknown",
+            "distribution": "regional"
+          },
+          'style': {
+                    'name': 'Imperial Stout',
+                    'description': 'Imperial stouts are usually extremely dark brown to black in color with flavors that are intensely malty, deeply roasted and sometimes with accents ofdark fruit &#40raisin, fig&#41 and chocolate. The bitterness is typically low to moderate. Imperial stouts are strong and generally exceed 8% ABV.',
+                    'glasses': [{
+                        'name': 'Snifter',
+                        'description': 'Whether a pure brandy snifter or a variant, these are used most commonly for barley wines, eisbocks and imperial stouts. They are stemmed and footed, bulbous at the bottom and narrowing all the way to the top. Because barley wines often have little head formation, the narrow mouth is fine as far as that goes, but still inhibits aroma a little bit, the tradeoff being the appearance of elegance. Many snifter variants made for beers have wider-than-average mouths for this reason.'
+                    }]
+          }
+}
+
+Brewery = {
+           "id": "9621",
+           "name": "Good People Brewing Company",
+           "description": "",
+           "type": "Microbrewery",
+           "streetAddress": "1035 20th St S, Ste B",
+           "city": "Birmingham",
+           "state": {
+             "name": "Alabama"
+           },
+           "zip": "35205",
+           "phone": "588 - 8002"
+}
+
+User Form = [
+    First Name,
+    Last Name,
+    Type of Beer (stout, lager, IPA),
+    Bitterness preferenece (low, med, high),
+    Keywords,
+    City,
+    State,
+    Zip
+]
