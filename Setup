@@ -1,0 +1,8 @@
+Setup Instructions:
+
+1) `$ mkvirtualenv -p /usr/bin/python3 beer`
+2) created `requirements.txt` and ran `$ pip install requirements.txt`
+3) created `Makefile` and pasted from `swapi` project
+4) `git init` and created repo on GitHub to link two together
+5) `$ django-admin startproject beer`
+6) `$ python manage.py startapp beerapp`

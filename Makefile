@@ -32,4 +32,4 @@ createsuperuser:
 
 # test:
 #     @echo $(TAG)Running Tests$(END)
-#     $(call django-command, test swapi)
+#     $(call django-command, test beer)
