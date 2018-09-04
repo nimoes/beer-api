@@ -3,6 +3,8 @@ import json
 
 from beerapp.credentials import *
 
+from django.http import HttpResponse, JsonResponse, HttpResponseNotFound, HttpResponseForbidden
+
 headers = {}
 headers["Content-Type"] = "application/json"
 headers["accept"] = "application/json"
@@ -90,7 +92,10 @@ items{
 # id: ID! = ! denotes required field, takes only an ID and returns a single beer
 def getBeer(ID=False):
       if not ID:
-            return None
+            return JsonResponse({
+                  "success": False,
+                  "msg": "A bad request"
+            }, status=400)
       else:
             if ID > 500000: ID = 500000
             ID = str(ID)
@@ -149,7 +154,10 @@ def beersByBrewer(brewerId=False, first=5, after=False):
             if first > 25: first = 25
       
       if not brewerId:
-            return None
+            return JsonResponse({
+                  "success": False,
+                  "msg": "A bad request"
+            }, status=400)
       if after:
             after = str(after)
             beers_by_brewer = 'query {beersByBrewer (brewerId: ' + brewerId + ', first: ' + first + ', after: ' + after + ') {' + BEER_LIST + '} }'
@@ -165,13 +173,15 @@ def beersByBrewer(brewerId=False, first=5, after=False):
 # order: SearchOrder = MATCH, RATING_COUNT, AVERAGE_RATING, OVERALL_SCORE (not strings in the query itself, these are variables)
 # first: Int = total number of breweries to pull (top 5 default)
 # after: ID = pulls the top breweries following the id of a specific brewery
-def brewerySearch(query=False, order="MATCH", first=5, after=False):
+def brewerySearch(query, order="MATCH", first=5, after=False):
       if not query:
-            return None
+            return JsonResponse({
+                  "success": False,
+                  "msg": "A bad request"
+            }, status=400)
       if first:
-            first = str(first);
-            if first > 100: first = 100            
-            
+            if first > 100: first = 100 
+            first = str(first)
       if after:
             after = str(after)
             brewery_search = 'query {brewerSearch (query: "' + query + '", order: '+ order +', first: '+ first +', after: ' + after + ') {' + BREWERY_LIST + '} }'
@@ -179,7 +189,6 @@ def brewerySearch(query=False, order="MATCH", first=5, after=False):
             brewery_search = 'query {brewerSearch (query: "' + query + '", order: '+ order +', first: '+ first +') {' + BREWERY_LIST + '} }'
       r = requests.post("https://api.r8.beer/v1/api/graphql/", json={"query":brewery_search,"variables":"{}"}, headers=headers)
       return r.json()
-      
 
 
 # beerReviews
@@ -188,7 +197,10 @@ def brewerySearch(query=False, order="MATCH", first=5, after=False):
 # after: ID = pulls the top breweries following the id of a speciifc brewery
 def beerReviews(beerId=False, first=5, after=False):
       if not beerId:
-            return None
+            return JsonResponse({
+                  "success": False,
+                  "msg": "A bad request"
+            }, status=400)
       if first:
             first = str(first);
             if first > 25: first = 25

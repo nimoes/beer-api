@@ -2,6 +2,7 @@ import json
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse, HttpResponseNotFound, HttpResponseForbidden
+from django.template import loader
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 
@@ -9,11 +10,11 @@ from beerapp.models import Beer, Brewery, Review
 from beerapp.ratebeer import *
 
 def index(request):
-    return JsonResponse(getBeer(1))
+    template = loader.get_template('index.html')
+    return HttpResponse(template.render())
 
 @csrf_exempt
-def brewery_list_view(request):
-    pass
+def brewery_list_view(request, brewery_name='Good People'):
     """
     Brewery 'list' actions:
 
@@ -28,10 +29,16 @@ def brewery_list_view(request):
 
         * If submited payload is nos JSON valid, return a `400` response.
     """
+    if request.method == 'GET':
+        return JsonResponse(brewerySearch(brewery_name))
+    else:
+        return JsonResponse({
+            "success": False,
+            "msg": "A bad request"
+        }, status=400)
     
-@csrf_exempt
+# @csrf_exempt
 def beer_detail_view(request, beer_id):
-    pass
     """
     Beer 'list' actions:
 
@@ -45,8 +52,29 @@ def beer_detail_view(request, beer_id):
 
         * If submited payload is nos JSON valid, return a `400` response.
     """
+    if request.method == 'GET':
+        return JsonResponse(getBeer(beer_id))
+    else:
+        return JsonResponse({
+            "success": False,
+            "msg": "A bad request"
+        }, status=400)
+
+
+# @csrf_exempt
+# def user_detail_view(request, user_id):
+#     pass
 
 
 @csrf_exempt
-def user_detail_view(request, user_id):
-    pass
+def test(request, test):
+    if request.method == 'GET':
+        return JsonResponse('test')
+    else:
+        return JsonResponse({
+            "success": False,
+            "msg": "A bad request"
+        }, status=400)
+        
+def detail(request, question_id):
+    return HttpResponse("You're looking at question %s." % question_id)
