@@ -1,3 +1,4 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
   <head>
@@ -6,15 +7,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,700,900|Raleway" rel="stylesheet">
+  
+    <link rel="stylesheet" href="{% static 'beer/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'beer/css/animate.css' %}">
 
-    <link rel="stylesheet" href="css/bootstrap.css">
-    <link rel="stylesheet" href="css/animate.css">
-
-    <link rel="stylesheet" href="fonts/ionicons/css/ionicons.min.css">
-    <link rel="stylesheet" href="fonts/fontawesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{% static 'beer/fonts/ionicons/css/ionicons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'beer/fonts/fontawesome/css/font-awesome.min.css' %}">
 
     <!-- Theme Style -->
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="{% static 'beer/css/style.css' %}">
   </head>
   <body>
     
@@ -30,7 +31,7 @@
           <div class="collapse navbar-collapse navbar-light" id="navbarsExample05">
             <ul class="navbar-nav ml-auto pl-lg-5 pl-0">
               <li class="nav-item">
-                <a class="nav-link active" href="index.html">Home</a>
+                <a class="nav-link active" href="#">Home</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#">Beer</a>
@@ -56,7 +57,7 @@
 
             <div class="mb-5 element-animate">
                 <div id="imgcontainer" style="width: 100%; height: 50%;">
-                  <img src="images/malty_logo.png" alt="Malty" style="height: 100%; width: 100%;">
+                  <img src="{% static 'beer/images/malty_logo.png' %}" alt="Malty" style="height: 100%; width: 100%;">
                 </div>
             </div>
 
@@ -64,9 +65,17 @@
             I am looking for
             </div>
 
-            <form class="form-inline element-animate" id="search-form">
+            <form action="brewery_list_view" method="GET">
+              {% csrf_token %}
+              { brewery_form.as_p }
+              <input type="text" placeholder="Enter brewery name">
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+
+
+            <form class="form-inline element-animate" id="search-form" method='GET'>
               <label for="s" class="sr-only">Location</label>
-              <input type="text" class="form-control form-control-block search-input" id="autocomplete" placeholder="" onFocus="geolocate()">
+              <input type="text" class="form-control form-control-block search-input" id="autocomplete" placeholder=""><!--onFocus="geolocate()"-->
               <button type="submit" class="btn btn-primary">Search</button>
             </form>
 
@@ -84,7 +93,7 @@
       <div class="container">
         <div class="row">
           <div class="col-md-6 element-animate ">
-            <a href="#" class="img-bg" style="background-image: url('images/GoodPeopleOutside.jpg')">
+            <a href="#" class="img-bg" style="background-image: url({% static 'beer/images/GoodPeopleOutside.jpg' %})">
               <div class="text" id="mapsicon">
                 <span class="icon ion-ios-location"></span>
                 <h2>Good People Brewing</h2>
@@ -93,7 +102,7 @@
             </a>
           </div>
           <div class="col-md-6 element-animate ">
-            <a href="#" class="img-bg" style="background-image: url('images/rightproperoutside_light.jpg')">
+            <a href="#" class="img-bg" style="background-image: url({% static '/beer/images/rightproperoutside_light.jpg' %})">
               <div class="text" id="mapsicon">
                 <span class="icon ion-ios-location"></span>
                 <h2>Right Proper Brewing</h2>
@@ -118,7 +127,7 @@
 
           <div class="col-lg-4 col-sm-6">
             <a href="#" id="166019" class="place">
-              <img src="images/TopplingGoliathBrewingCoLogo.jpg" alt="Toppling Goliath Image" height="250" width="250"
+              <img src="{% static '/beer/images/TopplingGoliathBrewingCoLogo.jpg' %}" alt="Toppling Goliath Image" height="250" width="250"
                 style="display: block; margin: auto">
               <h1 style="text-align: center;">Toppling Goliath Kentucky Brunch</h1>
               <h6 style="text-align: center;">I'm interested!</h6>
@@ -127,7 +136,7 @@
 
           <div class="col-lg-4 col-sm-6">
             <a href="#" id="249005" class="place">
-              <img src="images/Cigar-City-Logo-2018.jpg" alt="Cigar City Image" height="250" width="300"
+              <img src="{% static 'beer/images/Cigar-City-Logo-2018.jpg' %}" alt="Cigar City Image" height="250" width="300"
                 style="display: block; margin: auto">
               <h1 style="text-align: center;">Hunahpu's Imperial Stout</h1>
               <h6 style="text-align: center;">I'm interested!</h6>
@@ -136,7 +145,7 @@
 
           <div class="col-lg-4 col-sm-6">
             <a href="#" id="58590" class="place">
-              <img src="images/ThreeFloydsLogo.jpg" alt="3Floyd Image" height="250" width="250"
+              <img src="{% static 'beer/images/ThreeFloydsLogo.jpg' %}" alt="3Floyd Image" height="250" width="250"
                 style="display: block; margin: auto">
               <h1 style="text-align: center;">Three Floyds Dark Lord</h1>
               <h6 style="text-align: center;">I'm interested!</h6>
@@ -145,7 +154,7 @@
 
           <div class="col-lg-4 col-sm-6">
             <a href="#" id="258871" class="place">
-              <img src="images/superstition-logo.png" alt="Superstition Image" height="250" width="250"
+              <img src="{% static 'beer/images/superstition-logo.png' %}" alt="Superstition Image" height="250" width="250"
                 style="display: block; margin: auto">
               <h1 style="text-align: center;">Superstition Berry White</h1>
               <h6 style="text-align: center;">I'm interested!</h6>
@@ -154,7 +163,7 @@
 
           <div class="col-lg-4 col-sm-6">
             <a href="#" id="71826" class="place">
-              <img src="images/bell-brewing.png" alt="Bell Image" height="250" width="300"
+              <img src="{% static 'beer/images/bell-brewing.png' %}" alt="Bell Image" height="250" width="300"
                 style="display: block; margin: auto">
               <h1 style="text-align: center;">Bell's Black Nose Stout</h1>
               <h6 style="text-align: center;">I'm interested!</h6>
@@ -163,7 +172,7 @@
 
           <div class="col-lg-4 col-sm-6">
             <a href="#" id="439249" class="place">
-              <img src="images/sahtipaja.png" alt="Sahtipaja Image" height="250" width="250"
+              <img src="{% static 'beer/images/sahtipaja.png' %}" alt="Sahtipaja Image" height="250" width="250"
                 style="display: block; margin: auto">
               <h1 style="text-align: center;">Sahtipaja MeadMe Bourbon Vanilla</h1>
               <h6 style="text-align: center;">I'm interested!</h6>
@@ -181,10 +190,15 @@
         <div class="row mb-5">
           <div class="col-md-6">
             <h3 class="mb-4">About</h3>
-            <p class="mb-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut, quod!</p>
+            <p class="mb-4">
+            We present to you Malty<sup>TM</sup> - a cutting edge web 
+            application to find beer tailored to your personal taste.
+            </p>
             <ul class="list-unstyled ">
               <li class="d-flex"><span class="mr-3"><span class="icon ion-ios-location"></span></span><span class="">2625 2nd Ave N, Birmingham, AL 35203</span></li>
               <li class="d-flex"><span class="mr-3"><span class="icon ion-email"></span></span><span class="">calembackdaven@gmail.com</span></li>
+              <li class="d-flex"><span class="mr-3"><span class="icon ion-ios-location"></span></span><span class="">Arlington, VA 22204</span></li>
+              <li class="d-flex"><span class="mr-3"><span class="icon ion-email"></span></span><span class="">mhseo2180@gmail.com</span></li>
             </ul>
           </div>
           <div class="col-md-3">
@@ -212,12 +226,14 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
     <!-- loader -->
     <div id="loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#f4b214"/></svg></div>
 
-    <script src="js/jquery-3.2.1.min.js"></script>
-    <script src="js/jquery-migrate-3.0.0.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/jquery.waypoints.min.js"></script>
-    <script src="js/jquery.stellar.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-migrate/3.0.1/jquery-migrate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.js.map"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.js.map"></script>
+    <script src="{% static 'beer/js/jquery.waypoints.min.js' %}"></script>
+    <script src="{% static 'beer/js/jquery.stellar.min.js' %}"></script>
 
     <script>
       // This example displays an address form, using the autocomplete feature
@@ -291,6 +307,6 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&libraries=places&callback=initAutocomplete"
         async defer></script>
 
-    <script src="js/main.js"></script>
+    <script src="{% static 'beer/js/main.js' %}"></script>
   </body>
 </html>

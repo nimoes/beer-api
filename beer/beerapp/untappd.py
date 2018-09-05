@@ -4,15 +4,17 @@ import json
 from beerapp.credentials import *
 
 auth_token = '&client_id={}&client_secret={}'.format(client_id, client_secret)
+auth_token_q = '?client_id={}&client_secret={}'.format(client_id, client_secret)
 
+# auth_token must be inserted at the end of any query string. API does not accept headers, requires both client_id and client_secret to function
 # Example responses stored at bottom of code because they're huge
-# auth_token must be inserted at the end of a query string
 
 
 
-
-
-
+def getBeer(BID=False):
+      if not BID: return None
+      r = requests.get('https://api.untappd.com/v4/beer/info/{}{}'.format(str(BID), auth_token_q))
+      return r.json()
 
 
 
@@ -41,6 +43,53 @@ auth_token = '&client_id={}&client_secret={}'.format(client_id, client_secret)
 
 
 # https://api.untappd.com/v4/search/brewery?q=Good+People
+# {
+#     "meta": {
+#         "code": 200,
+#         "response_time": {
+#             "time": 0.127,
+#             "measure": "seconds"
+#         },
+#         "init_time": {
+#             "time": 0,
+#             "measure": "seconds"
+#         }
+#     },
+#     "notifications": [],
+#     "response": {
+#         "engine": "_algolia",
+#         "page": 0,
+#         "search_type": "wildcard",
+#         "sort": "",
+#         "term": "Good People",
+#         "key": "Good People",
+#         "found": 1,
+#         "brewery": {
+#             "count": 1,
+#             "items": [
+#                 {
+#                     "brewery": {
+#                         "brewery_id": 2811,
+#                         "beer_count": 147,
+#                         "brewery_name": "Good People Brewing Company",
+#                         "brewery_slug": "good-people-brewing-company",
+#                         "brewery_page_url": "/GPBrewing",
+#                         "brewery_label": "https://untappd.akamaized.net/site/brewery_logos/brewery-2811_b7617.jpeg",
+#                         "country_name": "United States",
+#                         "location": {
+#                             "brewery_city": "Birmingham",
+#                             "brewery_state": "AL",
+#                             "lat": 33.507,
+#                             "lng": -86.8121
+#                         }
+#                     }
+#                 }
+#             ]
+#         }
+#     }
+# }
+
+# https://api.untappd.com/v4/beer/info/BID=16630
 # {
 #   "beer": {
 #     "bid": 16630,

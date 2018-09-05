@@ -6,7 +6,7 @@ from django.template import loader
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 
-from beerapp.models import Beer, Brewery, Review
+from beerapp.models import Beer, Brewery
 from beerapp.ratebeer import *
 
 def index(request):
@@ -31,11 +31,20 @@ def brewery_list_view(request, brewery_name='Good People'):
     """
     if request.method == 'GET':
         return JsonResponse(brewerySearch(brewery_name))
+    elif request.method == 'POST':
+        brewery_form = BreweryForm(request.POST)
+        
+        if brewery_form.is_valid():
+            brewery_form = BreweryForm()
     else:
         return JsonResponse({
             "success": False,
             "msg": "A bad request"
         }, status=400)
+        
+    return render(request, '/search_results/brewery/', context={
+        'brewery_form': brewery_form
+    })
     
 # @csrf_exempt
 def beer_detail_view(request, beer_id):

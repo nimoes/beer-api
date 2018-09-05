@@ -1,22 +1,23 @@
 from django.db import models
+from decimal import Decimal
 
 
-class Review(models.Model):
-    # using ratebeer api
-    '''
-          id,
-      comment,
-      score,
-      scores {appearance, aroma, flavor, mouthfeel, overall},
-      beer {id, name},
-      createdAt,
-      updatedAt
-    '''
-    review_id = models.IntegerField(primary_key=True, blank=True)
-    comment = models.CharField(max_length=255)
-    score = models.IntegerField(default=0)
-    # scores
-    # beer
+# class Review(models.Model):
+#     # using ratebeer api
+#     '''
+#           id,
+#       comment,
+#       score,
+#       scores {appearance, aroma, flavor, mouthfeel, overall},
+#       beer {id, name},
+#       createdAt,
+#       updatedAt
+#     '''
+#     review_id = models.IntegerField(primary_key=True, blank=True, default='1')
+#     comment = models.TextField(default='<comment here>')
+#     score = models.IntegerField(default=0)
+#     # scores
+#     # beer
 
 '''
 {"data": 
@@ -60,7 +61,7 @@ class Review(models.Model):
 '''
 class Brewery(models.Model):
     # using openbrewerydb api
-    brewer_api_id = models.IntegerField(primary_key=True, blank=True)
+    brewer_api_id = models.IntegerField(primary_key=True, blank=True, default=0)
     brewery_name = models.CharField(max_length=255)
     brewery_type = models.CharField(max_length=255)
     streetAddress = models.CharField(max_length=255)
@@ -68,8 +69,8 @@ class Brewery(models.Model):
     state = models.CharField(max_length=14)
     postal_code = models.CharField(max_length=10)
     country = models.CharField(max_length=20)
-    longitude = models.DecimalField(max_digits=16, decimal_places=13)
-    latitude = models.DecimalField(max_digits=16, decimal_places=13)
+    longitude = models.DecimalField(max_digits=16, decimal_places=13, default=Decimal('000.0000000000000'))
+    latitude = models.DecimalField(max_digits=16, decimal_places=13, default=Decimal('000.0000000000000'))
     phone = models.CharField(max_length=17)
     website_url = models.URLField(max_length=200)
     updated_at = models.DateTimeField(auto_now_add=True)
@@ -137,17 +138,16 @@ Sample Beer API output (ratebeer)
 }
 '''
 
-# Create your models here.
 class Beer(models.Model):
-    beer_api_id = models.IntegerField()
+    beer_api_id = models.IntegerField(default='0')
     description = models.TextField()
-    avg_score = models.DecimalField(max_digits=5, decimal_places=2)
+    avg_score = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('000.00'))
     name = models.CharField(max_length=255)
     brewer = models.ForeignKey(Brewery, on_delete=models.CASCADE)
     # brewer_api_id = 
-    ibu = models.DecimalField(max_digits=4, decimal_places=1)
-    abv = models.DecimalField(max_digits=4, decimal_places=2)
-    calories = models.DecimalField(max_digits=5, decimal_places=2)
+    ibu = models.DecimalField(max_digits=4, decimal_places=1, default=Decimal('000.0'))
+    abv = models.DecimalField(max_digits=4, decimal_places=2, default=Decimal('00.00'))
+    calories = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('000.00'))
     # hops = models.CharField(max_length=255)
     # ideal_temp = models.DecimalField(max_digits=4, decimal_places=2)
     # does the beer get distributed within the states or only locally

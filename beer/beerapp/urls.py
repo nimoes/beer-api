@@ -13,5 +13,4 @@ urlpatterns = [
     
     # test
     #path('beer/test/', views.test, name='test'),
-    #path('<int:question_id>/', views.detail, name='detail'),
 ]
