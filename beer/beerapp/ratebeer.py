@@ -130,17 +130,18 @@ def topBeers(first=10, after=False):
 # first: Int = total number of beers to pull (top 10 default)
 # after: ID = pulls the top beers following the id of a specific beer
 def searchBeers(query="good people", first=10, after=False):
-      if first:
-            first = str(first);
-            if first > 100: first = 100
-            
-      if after:
-            after = str(after)
-            beer_search = 'query {beerSearch(query: "' + query + ', first: ' + first + ', after: ' + after + '") {' + BEER_LIST + ',totalCount } }'
-      else:
-            beer_search = 'query {beerSearch(query: "' + query + ', first: ' + first + '") {' + BEER_LIST + ',totalCount } }'
-      r = requests.post("https://api.r8.beer/v1/api/graphql/", json={"query":beer_search,"variables":"{}"}, headers=headers)
-      return r.json()
+    #   if first:
+    #         first = str(first);
+    #         if first > 100: first = 100
+    if first > 100: first = 100
+    first = str(first)
+    if after:
+        after = str(after)
+        beer_search = 'query {beerSearch(query: "' + query + ', first: ' + first + ', after: ' + after + '") {' + BEER_LIST + ',totalCount } }'
+    else:
+        beer_search = 'query {beerSearch(query: "' + query + ', first: ' + first + '") {' + BEER_LIST + ',totalCount } }'
+    r = requests.post("https://api.r8.beer/v1/api/graphql/", json={"query":beer_search,"variables":"{}"}, headers=headers)
+    return r.json()
 
 
 
@@ -197,13 +198,11 @@ def brewerySearch(query, order="MATCH", first=5, after=False):
 # after: ID = pulls the top breweries following the id of a speciifc brewery
 def beerReviews(beerId=False, first=5, after=False):
       if not beerId:
-            return JsonResponse({
-                  "success": False,
-                  "msg": "A bad request"
-            }, status=400)
+            return None
       if first:
             first = str(first);
-            if first > 25: first = 25
+            if first > 25: 
+                first = 25
             
       if after:
             after = str(after)

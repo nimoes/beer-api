@@ -19,9 +19,10 @@ from django.urls import path, include
 from beerapp import views
 
 urlpatterns = [
-    path('home/', views.index, name='index'),
+    path('', views.index, name='index'),
     path('admin/', admin.site.urls),
-    path('search_results/', include('beerapp.urls'), name='results'),
+    path('search_results', views.search_view, name='search_results'),
+    path('test_api/', include('beerapp.urls'), name='results'),
     path('contact/', views.index, name='contact'),
     path('login/', views.index, name='login'),
     path('logout/', views.index, name='logout')

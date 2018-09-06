@@ -62,6 +62,7 @@ from decimal import Decimal
 class Brewery(models.Model):
     # using openbrewerydb api
     brewer_api_id = models.IntegerField(primary_key=True, blank=True, default=0)
+    # brewery_name = models.SlugField(unique=True)
     brewery_name = models.CharField(max_length=255)
     brewery_type = models.CharField(max_length=255)
     streetAddress = models.CharField(max_length=255)
@@ -74,6 +75,8 @@ class Brewery(models.Model):
     phone = models.CharField(max_length=17)
     website_url = models.URLField(max_length=200)
     updated_at = models.DateTimeField(auto_now_add=True)
+    # for search box
+    # slug = models.SlugField(max_length=200)
     
     def __str__(self):
         return "Brewery: {}".format(self.brewery_name)
@@ -139,7 +142,7 @@ Sample Beer API output (ratebeer)
 '''
 
 class Beer(models.Model):
-    beer_api_id = models.IntegerField(default='0')
+    beer_api_id = models.IntegerField(default=0)
     description = models.TextField()
     avg_score = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('000.00'))
     name = models.CharField(max_length=255)
@@ -154,4 +157,4 @@ class Beer(models.Model):
     # distribution = models.BooleanField()
     
     def __str__(self):
-        return "Beer: {} ({}%)".format(self.name, self.alcohol)
+        return "Beer: {} ({}%)".format(self.name, self.abv)

@@ -10,4 +10,4 @@ class BeerForm(forms.ModelForm):
 class BreweryForm(forms.ModelForm):
     class Meta:
         model = Brewery
-        fields = ('brewery_name', 'streetAddress', 'city', 'state', 'postal_code', 'country',)
+        fields = ('brewery_name',)
