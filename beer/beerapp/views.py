@@ -21,11 +21,19 @@ def search_view(request, search='Good People'):
     
     """
     q = request.GET.get('q')
-    results = brewerySearch(query=q)
-    if results == None:
+    search_type = request.GET.get('search_type')
+
+    if search_type == 'beer':
+        # print(searchBeers(query=q))
         results = searchBeers(query=q)
+    elif search_type == 'brewery':
+        results = brewerySearch(query=q)
+    else:
+        results = topBeers(10)
+
     return render(request, 'search_results.html', context={
-        'results': results
+        'results': results,
+        'search_type': search_type
     })
 
 @csrf_exempt

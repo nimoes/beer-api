@@ -1,6 +1,31 @@
 {% extends 'index.html' %}
 {% block content %}
-    <p>
-        {{ results }}
-    </p>
+</section>
+    <h1>Results</h1><br/>
+    <h2>Breweries</h2>
+    {% if results.data.brewerSearch %}
+        <ul>
+            {% for brewer in results.data.brewerSearch.items %}
+            <li>{{ brewer }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <ul>
+            <li><strong>No breweries found.</strong></li>
+        </ul>
+    {% endif %}
+
+    <h2>Beers</h2>
+    {% if results.data.beerSearch %}
+        <ul>
+            {% for beer in results.data.beerSearch.items %}
+            <li>{{ beer }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <ul>
+            <li><strong>No beers found.</strong></li>
+        </ul>
+    {% endif %}
+
 {% endblock %}
