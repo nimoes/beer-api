@@ -6,7 +6,12 @@
     {% if results.data.brewerSearch %}
         <ul>
             {% for brewer in results.data.brewerSearch.items %}
-            <li>{{ brewer }}</li>
+            <li>
+                <img src={{ brewer.imageUrl }} alt={{ brewer.name }}> 
+                <b>{{brewer.name}}</b> ({{ brewer.type }}) : {{ brewer }}
+                
+            </li>
+            <br/>
             {% endfor %}
         </ul>
     {% else %}
@@ -19,7 +24,10 @@
     {% if results.data.beerSearch %}
         <ul>
             {% for beer in results.data.beerSearch.items %}
-            <li>{{ beer }}</li>
+            <li>
+                {{ beer }}
+            </li>
+            <br/>
             {% endfor %}
         </ul>
     {% else %}
@@ -27,5 +35,6 @@
             <li><strong>No beers found.</strong></li>
         </ul>
     {% endif %}
+
 
 {% endblock %}

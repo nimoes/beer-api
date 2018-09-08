@@ -2,22 +2,6 @@ from django.db import models
 from decimal import Decimal
 
 
-# class Review(models.Model):
-#     # using ratebeer api
-#     '''
-#           id,
-#       comment,
-#       score,
-#       scores {appearance, aroma, flavor, mouthfeel, overall},
-#       beer {id, name},
-#       createdAt,
-#       updatedAt
-#     '''
-#     review_id = models.IntegerField(primary_key=True, blank=True, default='1')
-#     comment = models.TextField(default='<comment here>')
-#     score = models.IntegerField(default=0)
-#     # scores
-#     # beer
 
 '''
 {"data": 

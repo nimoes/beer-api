@@ -1,30 +1,39 @@
 import json
 
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, HttpResponseNotFound, HttpResponseForbidden
 from django.template import loader
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.decorators import login_required
+# from django.contrib.auth.decorators import login_required
 
 from beerapp.models import Beer, Brewery
 from beerapp.ratebeer import *
+
 
 @csrf_exempt
 def index(request):
     template = loader.get_template('index.html')
     return HttpResponse(template.render())
 
+
 @csrf_exempt
 def search_view(request, search='Good People'):
     """
-    Grabs user's input from homepage search bar and provides results
+    This function grabs user's input from homepage search bar and provides 
+    results.
+    Input name, `search_type`, is used to determine whether the users
+    want to tailor their search to 1) beer or 2) brewery. 
+    Input name, `q`, is used to grab users' input and perform 
+    an appropriate function which then sends an API request to grab the
+    results.
+    Results will be rendered to `/search_results` where users can further
+    interact with the website
     
     """
     q = request.GET.get('q')
     search_type = request.GET.get('search_type')
-
+    
     if search_type == 'beer':
-        # print(searchBeers(query=q))
         results = searchBeers(query=q)
     elif search_type == 'brewery':
         results = brewerySearch(query=q)
@@ -36,19 +45,11 @@ def search_view(request, search='Good People'):
         'search_type': search_type
     })
 
+
 @csrf_exempt
 def brewery_list_view(request, brewery_name='Good People'):
     """
-    Brewery 'list' actions:
 
-    Based on the request method, perform the following actions:
-        * GET: Returns the `Brewery` object based on brewery_name
-
-    Make sure you add at least these validations:
-        * If the view receives another HTTP method out of the ones listed
-          above, return a `400` response.
-
-        * If submited payload is nos JSON valid, return a `400` response.
     """
     if request.method == 'GET':
         return JsonResponse(brewerySearch(brewery_name))
@@ -60,17 +61,7 @@ def brewery_list_view(request, brewery_name='Good People'):
 @csrf_exempt
 def beer_detail_view(request, beer_id):
     """
-    Beer 'list' actions:
 
-    Based on the request method, perform the following actions:
-
-        * GET: Returns the `Beer` object based on beer_id
-
-    Make sure you add at least these validations:
-        * If the view receives another HTTP method out of the ones listed
-          above, return a `400` response.
-
-        * If submited payload is nos JSON valid, return a `400` response.
     """
     if request.method == 'GET':
         return JsonResponse(getBeer(beer_id))
