@@ -1,40 +1,180 @@
 {% extends 'index.html' %}
 {% block content %}
-</section>
-    <h1>Results</h1><br/>
-    <h2>Breweries</h2>
-    {% if results.data.brewerSearch %}
-        <ul>
+
+    <br/>
+    <br/>
+    <br/>
+    <section>
+        
+            <br/>
+            
+            {% if results.data.brewerSearch %}
+            <h2 class="text-center">Breweries</h2>
+            
+            <br/>
+            <br/>
+            
+            <div class = "container">
+                <div class = "row" style="text-align: center;">
+                    <div class = "col-3">
+                    </div>
+                    <div class = "col-3">
+                        Name
+                    </div>
+                    <div class = "col-2">
+                        Type
+                    </div>
+                    <div class = "col-2">
+                        Location
+                    </div>
+                    <div class = "col-1">
+                    </div>
+                    <div class = "col-1">
+                    </div>
+                </div>
+            </div>
+            
+            <br/>
+            <hr>
+            
             {% for brewer in results.data.brewerSearch.items %}
-            <li>
-                <img src={{ brewer.imageUrl }} alt={{ brewer.name }}> 
-                <b>{{brewer.name}}</b> ({{ brewer.type }}) : {{ brewer }}
+            <!-- brewery results -->
+            <div class = "container" id="result" onclick="location.href='/brewery?id={{ brewer.id }}&name={{ brewer.name }}'">
+                <div class = "row align-items-center" style="text-align: center;">
+                   <div class = "col-3">
+                        <img src="{{ brewer.imageUrl }}" alt="Smiley face" style="max-width: 95%; max-height:95%">
+                    </div>
+                    <div class = "col-3 align-middle">
+                        {{ brewer.name }}
+                    </div>
+                    <div class = "col-2">
+                        {{ brewer.type }}
+                    </div>
+                    <div class = "col-2">
+                        {{ brewer.StreetAddress }}
+                        {{brewer.city}}, {{brewer.state.name}} {{brewer.zip}}
+                    </div>
+                    <div class = "col-1">
+                        <a href="/user/like/{{ brewer.id }}">Like</a>
+                        <a href="/user/dislike/{{ brewer.id }}">Disike</a>
+                    </div>
+                    <div class = "col-1">
+                        <a href="/brewery?id={{ brewer.id }}&name={{ brewer.name }}">Details</a>
+                    </div>
+                </div>
+                <br style="line-height: 10px;">
                 
-            </li>
-            <br/>
+                {% if brewer.description %}
+                <div class = "row">
+                    <div class = "col-10 col-md-offset-2">
+                        {{ brewer.description }}
+                    </div>
+                </div>
+                {% endif %}
+                
+            </div>
+            <!-- end brewery results -->
+            <hr>
             {% endfor %}
-        </ul>
-    {% else %}
-        <ul>
-            <li><strong>No breweries found.</strong></li>
-        </ul>
-    {% endif %}
+            
+            {% endif %}
 
-    <h2>Beers</h2>
-    {% if results.data.beerSearch %}
-        <ul>
-            {% for beer in results.data.beerSearch.items %}
-            <li>
-                {{ beer }}
-            </li>
-            <br/>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <ul>
-            <li><strong>No beers found.</strong></li>
-        </ul>
-    {% endif %}
-
-
+            
+            {% if results.data.beerSearch %}
+            <h2 class="text-center">Beers</h2>
+                <ul>
+                    <!-- header -->
+                    <br/>
+                    <div class = "container">
+                        <div class = "row" style="text-align: center;">
+                            <div class = "col-1">
+                                Logo
+                            </div>
+                            <div class = "col-5">
+                                Brewery - Beer
+                            </div>
+                            <div class = "col-3">
+                                Style
+                            </div>
+                            <div class = "col-1">
+                                IBV
+                            </div>
+                            <div class = "col-1">
+                                ABV
+                            </div>
+                        </div>
+                    </div>
+                     
+                    <br/>
+                    <hr>
+                    
+                    {% for beer in results.data.beerSearch.items %}
+                    <!-- beer results -->
+                    <div class = "container" id="result" onclick="location.href='/beer_detail_view/{{ beer.beer.bid }}'">
+                        <div class = "row align-items-center" style="text-align: center;">
+                           <div class = "col-2 logo">
+                                <img src="{{ beer.imageUrl }}" alt="Smiley face" height="156em" width="76em">
+                            </div>
+                            <div class = "col-5 align-middle name">
+                                {{ beer.brewer.name }} - {{ beer.name }}
+                            </div>
+                            <div class = "col-2 style">
+                                {{ beer.style.name }}
+                            </div>
+                            <div class = "col-1 ibu">
+                                {{ beer.ibu }}
+                            </div>
+                            <div class = "col-1 abv">
+                                {{ beer.abv }}
+                            </div>
+                            <div class = "col-1 detail">
+                                <a href="/beer_detail_view/{{ beer.id }}">Details</a>
+                            </div>
+                        </div>
+                        <br style="line-height: 10px;">
+                        <div class = "row">
+                            <div class = "col-12 description" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                {{ beer.description }}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end beer results -->
+                    <hr>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+    </section>
+    
+    <style type="text/css">
+    #result:hover {
+        border: 1px solid rgba(0, 0, 0, .15);
+        /*background-color: lightgray;*/
+        box-shadow:
+                1px 1px lightgray, 2px 2px lightgray, 3px 3px lightgray;
+        -webkit-transform: translateX(-3px);
+        transform: translateX(-3px);
+        white-space: "";
+    }
+    </style>
+    
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+              integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+              crossorigin="anonymous"></script>
+    
+        <script type="text/javascript">
+            $(".description").hover(function(){
+                $(this).css("white-space", "normal");
+                }, function(){
+                $(this).css("white-space", "nowrap");
+            });
+        </script>
+    
+    <script type="text/javascript">
+    
+    var l = document.getElementsByClassName('abv').length;
+    for (var x = 0; x < l; x++){
+        document.getElementsByClassName('abv')[x].innerHTML = parseFloat(document.getElementsByClassName('abv')[x].innerHTML).toFixed(1);
+    }
+    </script>    
+    
 {% endblock %}

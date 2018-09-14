@@ -22,9 +22,13 @@ import json
 
 # searchBrewery
 # Query (string)    takes any parameter and searches all the paramters
-def searchBrewery(query=False):
+def searchBrewery(query):
     if not query: return None
-    r = requests.get('https://api.openbrewerydb.org/breweries/search?query={}'.format(query))
+    
+    # Logic reformat step
+    if "Company" in query: query = query.replace("Company", "Co");
+    
+    r = requests.get('https://api.openbrewerydb.org/breweries/search?query=' + str(query))
     return r.json()
 
 

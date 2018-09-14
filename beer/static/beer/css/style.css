@@ -44,7 +44,7 @@ header .navbar {
   background: transparent !important;
 }
 
-@media (max-width: 991.98px) {
+@media (max-width: 1920px) {
   header .navbar {
     background: rgba(0, 0, 0, 0.4) !important;
     padding-top: .5rem;
@@ -57,7 +57,7 @@ header .navbar .nav-link {
   outline: none !important;
 }
 
-@media (max-width: 991.98px) {
+@media (max-width: 1920px) {
   header .navbar .nav-link {
     padding: .5rem .5rem;
   }
@@ -196,7 +196,7 @@ header .navbar.navbar-light .nav-link.active {
   background-size: cover;
 }
 
-@media (max-width: 991.98px) {
+@media (max-width: 1920px) {
   .img-md-fluid {
     max-width: 100%;
   }
@@ -558,7 +558,7 @@ textarea.form-control {
   text-transform: uppercase;
 }
 
-@media (max-width: 991.98px) {
+@media (max-width: 1920.98px) {
   .owl-carousel.home-slider .slider-item .slider-text h1 {
     font-size: 40px;
   }

@@ -11,15 +11,19 @@ auth_token_q = '?client_id={}&client_secret={}'.format(client_id, client_secret)
 
 
 
-def getBeer(BID=False):
+def getTapBeer(BID=False):
       if not BID: return None
       r = requests.get('https://api.untappd.com/v4/beer/info/{}{}'.format(str(BID), auth_token_q))
       return r.json()
 
-
-
-
-
+def searchTapBeer(breweryName=False, beerName=False):
+      if not beerName: return None;
+      
+      if breweryName and beerName: query = str(breweryName) + str(beerName)
+      else: query = beerName;
+      
+      r = requests.get('https://api.untappd.com/v4/search/beer?q={}{}'.format(query, auth_token))
+      return r.json()
 
 
 
