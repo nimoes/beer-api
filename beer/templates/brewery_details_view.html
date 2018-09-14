@@ -1,0 +1,230 @@
+{% extends 'index.html' %}
+{% block content %}
+             
+            {% if results %}
+            <br/><br/>
+            
+            {% if results.data.brewerSearch %}
+            {% for brewer in results.data.brewerSearch.items %}
+            <h1 style="margin-top: 200px; text-align: center">
+                {{ brewer.name }}
+            </h1>
+            
+            <div class = "container" id="result" onclick="location.href='#map'">
+                <div class = "row align-items-center" style="text-align: center;">
+                   <div class = "col-3">
+                        <img src="{{ brewer.imageUrl }}" alt="Smiley face" style="max-width: 95%; max-height:95%">
+                    </div>
+                    <div class = "col align-middle">
+                        {% if match.phone %}
+                            {{ match.phone }}
+                        {% else %}
+                            {{ brewer.phone }}
+                        {% endif %}
+                    </div>
+                    <div class = "col">
+                        {% if brewer.type %}
+                            {{ brewer.type }}
+                        {% else %}
+                            {{ match.brewery_type }}
+                        {% endif %}
+                    </div>
+                    {% if match %}
+                    <div class = "col">
+                        <a href="{{ match.website_url }}">{{ match.website_url }}</a>
+                    </div>
+                    {% endif %}
+                    <div class = "col">
+                        <a href="#map" id="address1">
+                        {% if brewer.streetAddress %}
+                            {{ brewer.streetAddress }}
+                        {% else %}
+                            {{ match.street }}
+                        {% endif %}
+                        </a>
+                        <a href="#map">
+                        {{brewer.city}}, {{brewer.state.name}} {{brewer.zip}}
+                        </a>
+                    </div>
+                </div>
+            
+            </div>
+            {% endfor %}
+            {% else %}
+                {% if results.data.beersByBrewer.items %}
+                <h1 style="margin-top: 200px; text-align: center">
+                    {{ results.data.beersByBrewer.items.brewer.name }}
+                </h1>
+                {% endif %}
+            {% endif %}
+            
+            <br/><br/>
+            
+                {% if results.data.beersByBrewer.items %}
+                <h4 style="text-align: center">Beers at this Brewery</h4>
+                <ul>
+                    <!-- header -->
+                    <br/>
+                    
+                    <br/>
+                    <div class = "container">
+                        <div class = "row" style="text-align: center;">
+                            <div class = "col-2">
+                                Logo
+                            </div>
+                            <div class = "col-5">
+                                Brewery - Beer
+                            </div>
+                            <div class = "col-1">
+                                Style
+                            </div>
+                            <div class = "col-1">
+                                IBV
+                            </div>
+                            <div class = "col-1">
+                                ABV
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <br/>
+                    <hr>
+                    
+                    {% for beer in results.data.beersByBrewer.items %}
+                    <!-- beer results -->
+                    <div class = "container" id="result" onclick="location.href='/beer_detail_view/{{ beer.beer.bid }}'">
+                    
+                        <div class = "row align-items-center" style="text-align: center;">
+                            <div class = "col-2 image">
+                                <img src="{{ beer.imageUrl }}" alt="Smiley face" height="156em" width="76em">
+                            </div>
+                            <div class = "col-5 align-middle name">
+                                {{ beer.brewer.name }} - {{ beer.name }}
+                            </div>
+                            <div class = "col-1 style">
+                                {{ beer.styleScore }}
+                            </div>
+                            <div class = "col-1 rating">
+                                {{ beer.ratingCount }}
+                            </div>
+                            <div class = "col-1 ibu">
+                                {{ beer.ibu }}
+                            </div>
+                            <div class = "col-1 abv" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                {{ beer.abv }}
+                            </div>
+                            <div class = "col-1 details">
+                                <a href="/beer_detail_view/{{ beer.id }}">Details</a>
+                            </div>
+                        </div>
+                        <br style="line-height: 10px;">
+                        <div class = "row">
+                            <div id="desc" class = "col-12 description" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                {{ beer.description }}
+                            </div>
+                        </div>
+                    
+                    </div>
+                    <!-- end beer results -->
+                    <hr>
+                    </ul>
+                    {% endfor %}
+                    
+                {% endif %}
+            {% endif %}
+  
+  <!-- map -->
+  <body onload="initialize()">
+    <div style="margin-top:220px" id="map">
+      <input id="address" type="text" value="1035 20th St S, Ste B" style="visibility: hidden; margin-top: 20px">
+      <input id="button" type="button" value="Geocode" onclick="codeAddress()" style="visibility: hidden">
+    </div>
+    <div id="map-canvas" style="height:90%;top:30px;padding:300px;"></div>
+  </body>
+
+<!-- Google Map Settings-->
+<div id="key" style="visibility: hidden;">
+    {{ google_api }}
+</div>
+<script>
+    var src = document.getElementById('key').innerHTML.trim()
+    document.write('<script src="https://maps.googleapis.com/maps/api/js?key=' + src + '" type="text/javascript"><\/script>');
+</script>
+<!-- Google Map Settings-->
+
+<script type="text/javascript">
+var geocoder;
+var map;
+
+    function initialize() {
+    geocoder = new google.maps.Geocoder();
+    var latlng = new google.maps.LatLng(33.5010548, -86.7962572);
+    var mapOptions = {
+      zoom: 15,
+      center: latlng,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    }
+    map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+    }
+
+    function codeAddress() {
+        var address = document.getElementById('address1').text.trim();
+        if (!address) {
+            address = "1035 20th St S, Ste B"
+        }
+        geocoder.geocode( { 'address': address}, function(results, status) {
+          if (status == google.maps.GeocoderStatus.OK) {
+            map.setCenter(results[0].geometry.location);
+            var marker = new google.maps.Marker({
+                map: map,
+                position: results[0].geometry.location
+            });
+          } else {
+            console.log('Geocode was not successful for the following reason: ' + status);
+          }
+        });
+    }
+
+</script>
+
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+<script type="text/javascript">
+try {
+    for (x=0; x<5; x++)
+    {
+        document.getElementsByClassName('style')[x].innerHTML = parseInt(document.getElementsByClassName('style')[x].innerHTML)
+    	document.getElementsByClassName('abv')[x].innerHTML = parseInt(document.getElementsByClassName('abv')[x].innerHTML)
+    }
+}
+catch (e) {
+    console.log("Error loading data from API")
+}
+
+
+    setTimeout(function(){ $('#button').click() }, 1000);
+</script>
+
+<style type="text/css">
+#result:hover {
+    border: 1px solid rgba(0, 0, 0, .15);
+    /*background-color: lightgray;*/
+    box-shadow:
+            1px 1px lightgray, 2px 2px lightgray, 3px 3px lightgray;
+    -webkit-transform: translateX(-3px);
+    transform: translateX(-3px);
+}
+
+</style>
+
+<script type="text/javascript">
+    $(".description").hover(function(){
+        $(this).css("white-space", "normal");
+        }, function(){
+        $(this).css("white-space", "nowrap");
+    });
+</script>
+
+{% endblock %}

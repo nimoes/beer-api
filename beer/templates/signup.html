@@ -1,0 +1,17 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<section>
+    <div class="container">
+    <h1>Sign up</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="form-group">
+                <button type="submit" class="btn-sm btn-outline-primary" value="signup">Sign up</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+{% endblock %}
