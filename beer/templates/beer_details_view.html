@@ -1,154 +1,221 @@
 {% extends 'index.html' %}
 {% block content %}
              
-            {% if results %}
-            <br/><br/>
-            
-            {% if results.data.brewerSearch %}
-            {% for brewer in results.data.brewerSearch.items %}
-            <h1 style="margin-top: 200px; text-align: center">
-                {{ brewer.name }}
-            </h1>
-            
-            <div class = "container" id="result" onclick="location.href='#map'">
-                <div class = "row align-items-center" style="text-align: center;">
-                   <div class = "col-3">
-                        <img src="{{ brewer.imageUrl }}" alt="Smiley face" style="max-width: 95%; max-height:95%">
-                    </div>
-                    <div class = "col align-middle">
-                        {% if match.phone %}
-                            {{ match.phone }}
-                        {% else %}
-                            {{ brewer.phone }}
+<br/><br/><br/><br/>
+            {% if results.data.beer %}
+                
+                <h6 class="text-center">Find this beer at</h6>
+                <h1 id="name1" class="text-center">{{results.data.beer.brewer.name}}</h1>
+                
+                <div class = "container" id="result" onclick="location.href='#map'">
+                    <div class = "row align-items-center" style="text-align: center;">
+                       <div class = "col-3">
+                            <img src="{{ results.data.beer.brewer.imageUrl }}" alt="Smiley face" style="max-width: 95%; max-height:95%">
+                        </div>
+                        <div class = "col-2 align-middle">
+                            {% if results.data.beer.brewer.phone %}
+                                {{ results.data.beer.brewer.phone }}
+                            {% endif %}
+                        </div>
+                        <div class = "col">
+                            {% if results.data.beer.brewer.type %}
+                                {{ results.data.beer.brewer.type }}
+                            {% else %}
+                                {{ match.brewery.brewery_type }}
+                            {% endif %}
+                        </div>
+                        {% if match.brewery.contact.url %}
+                        <div class = "col">
+                            <a href="{{ match.brewery.contact.url }}">{{ match.brewery.contact.url }}</a>
+                        </div>
                         {% endif %}
-                    </div>
-                    <div class = "col">
-                        {% if brewer.type %}
-                            {{ brewer.type }}
-                        {% else %}
-                            {{ match.brewery_type }}
-                        {% endif %}
-                    </div>
-                    {% if match %}
-                    <div class = "col">
-                        <a href="{{ match.website_url }}">{{ match.website_url }}</a>
-                    </div>
-                    {% endif %}
-                    <div class = "col">
-                        <a href="#map" id="address">
-                        {% if brewer.streetAddress %}
-                            {{ brewer.streetAddress }}
-                        {% else %}
-                            {{ match.street }}
-                        {% endif %}
-                        </a>
-                        <a href="#map">
-                        {{brewer.city}}, {{brewer.state.name}} {{brewer.zip}}
-                        </a>
+                        <div class = "col - 3">
+                            {% if results.data.beer.brewer.streetAddress %}
+                            <a href="#map" id="address1">
+                                {{ results.data.beer.brewer.streetAddress }}
+                            </a>
+                            {% endif %}
+                            {% if results.data.beer.brewer.city %}
+                            <a href="#map">
+                            {{results.data.beer.brewer.city}}, {{results.data.beer.brewer.state.name}} {{results.data.beer.brewer.zip}}
+                            </a>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
-            
-            </div>
-            {% endfor %}
-            {% else %}
-                {% if results.data.beersByBrewer.items %}
-                <h1 style="margin-top: 200px; text-align: center">
-                    {{ results.data.beersByBrewer.items.brewer.name }}
-                </h1>
-                {% endif %}
-            {% endif %}
-            
-            <br/><br/>
-            
-                {% if results.data.beersByBrewer.items %}
-                <h4 style="text-align: center">Beers at this Brewery</h4>
-                <ul>
-                    <!-- header -->
-                    <br/>
-                    
-                    <br/>
-                    <div class = "container">
-                        <div class = "row" style="text-align: center;">
-                            <div class = "col-2">
-                                Logo
-                            </div>
-                            <div class = "col-5">
-                                Brewery - Beer
-                            </div>
-                            <div class = "col-1">
-                                Style
-                            </div>
-                            <div class = "col-1">
-                                IBV
-                            </div>
-                            <div class = "col-1">
-                                ABV
-                            </div>
+                
+                <hr>
+                
+                <h1 class="text-center">{{ results.data.beer.name }}</h1>
+                <br style="line-height: 10px;">
+                
+                <br style="line-height: 15px;">
+                <div class="container">
+                    <div class="row align-items-center" style="text-align:center">
+                        <div class = "col-lg-5 offset-1 col-sm-6 logo">
+                            <img src="{{ results.data.beer.imageUrl }}" alt="Smiley face" height="280em" width="176em">
                         </div>
-                    </div>
-                    
-                    <br/>
-                    <hr>
-                    
-                    {% for beer in results.data.beersByBrewer.items %}
-                    <!-- beer results -->
-                    <div class = "container" id="result" onclick="location.href='/beer_detail_view/{{ beer.beer.bid }}'">
-                    
-                        <div class = "row align-items-center" style="text-align: center;">
-                            <div class = "col-2 image">
-                                <img src="{{ beer.imageUrl }}" alt="Smiley face" height="156em" width="76em">
+                        
+                        <div class = "col-lg-6 col-sm-6 logo">
+                            <div class="row align-items-center">
+                                    {% if match.beer.beer_abv %}
+                                        <div class = "col-3 offset-3" id="abv" style="text-align: left"> <h5>ABV</h5> </div> 
+                                        <div class = "col" id="abvval" style="text-align: left"> <i>{{match.beer.beer_abv}}</i> </div>
+                                    {% else %}
+                                        <div class = "col-3 offset-3" id="abv" style="text-align: left"> <h5>ABV</h5> </div> 
+                                        <div class = "col" id="abvval" style="text-align: left"> <i>{{results.data.beer.abv}}</i> </div>
+                                    {% endif %}
                             </div>
-                            <div class = "col-5 align-middle name">
-                                {{ beer.brewer.name }} - {{ beer.name }}
+                            
+                            <br style="line-height: 15px;">
+                        
+                            <div class="row align-items-center">
+                                    {% if match.beer.beer_ibu %}
+                                        <div class = "col-3 offset-3" id="ibu" style="text-align: left"> <h5>IBU</h5> </div> 
+                                        <div class = "col" id="ibuval" style="text-align: left"> <i>{{match.beer.beer_ibu}}</i> </div>
+                                    {% else %}
+                                        <div class = "col-3 offset-3" id="ibu" style="text-align: left"> <h5>IBU</h5> </div>
+                                        <div class = "col" id="ibuval" style="text-align: left"> <i>{{results.data.beer.ibu}}</i> </div>
+                                    {% endif %}
+                            </div> 
+                            
+                            <br style="line-height: 15px;">
+                            
+                            <div class="row align-items-center">
+                                    {% if results.data.beer.style.name %}
+                                        <div class = "col-3 offset-3" id="style" style="text-align: left"> <h5>Style</h5> </div> 
+                                        <div class = "col" id="style" style="text-align: left"> <i>{{results.data.beer.style.name}}</i> </div>
+                                    {% else %}
+                                        <div class = "col-3 offset-3" id="style" style="text-align: left"> <h5>IBU</h5> </div> 
+                                        <div class = "col" id="style" style="text-align: left"> <i>{{match.beer.style}}</i> </div>
+                                    {% endif %}
                             </div>
-                            <div class = "col-1 style">
-                                {{ beer.styleScore }}
+                            
+                            <br style="line-height: 15px;">
+                            
+                            {% if results.data.beer.calories %}
+                            <div class="row align-items-center">
+                                <div class = "col-3 offset-3" id="calories" style="text-align: left"> <h5>Calories</h5> </div>
+                                <div class = "col" id="calories" style="text-align: left"> <i>{{results.data.beer.calories}}</i> </div>
                             </div>
-                            <div class = "col-1 rating">
-                                {{ beer.ratingCount }}
+                            {% endif %}
+                            
+                            <br style="line-height: 15px;">
+                            
+                            {% if results.data.beer.overallScore %}
+                            <div class="row align-items-center">
+                                <div class = "col-3 offset-3" id="score" style="text-align: left"> <h5>Total Score</h5> </div>
+                                <div class = "col" id="score" style="text-align: left"> <i>{{ results.data.beer.overallScore|floatformat:2 }}</i> </div>
                             </div>
-                            <div class = "col-1 ibu">
-                                {{ beer.ibu }}
-                            </div>
-                            <div class = "col-1 abv" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                {{ beer.abv }}
-                            </div>
-                            <div class = "col-1 details">
-                                <a href="/beer_detail_view/{{ beer.id }}">Details</a>
-                            </div>
+                            {% endif %}
+                            
                         </div>
-                        <br style="line-height: 10px;">
+                        
+                        <br/><br/>
+                            
+                </div>
+                        
+                    <br/>
+                    
+                    <!-- Style -->
+                    {% if results.data.beer.style.description %}
+                    <div class="container">
+                        <hr>
+                    
+                        <h5 class = "row">
+                            <b>{{results.data.beer.style.name}}</b>
+                        </h5>
                         <div class = "row">
-                            <div id="desc" class = "col-12 description" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                {{ beer.description }}
+                            <div class = "col-12 style" style="white-space: wrap; overflow: hidden; text-overflow: ellipsis;">
+                                <i>{{results.data.beer.style.description}}</i>
                             </div>
                         </div>
-                    
                     </div>
-                    <!-- end beer results -->
-                    <hr>
-                    </ul>
-                    {% endfor %}
+                    {% endif %}
                     
-                {% endif %}
+                    <br style="line-height: 10px;">
+                    
+                    <!-- Descriptions -->
+                    {% if results.data.beer.description %}
+                    <div class="container">
+                        <h5 class = "row">
+                            <b>What our experts say</b>
+                        </h5>
+                        <div class = "row">
+                            <div class = "col-12 description1" style="white-space: wrap; overflow: hidden; text-overflow: ellipsis;">
+                                <i>{{ results.data.beer.description }}</i>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <br style="line-height: 10px;">
+                    
+                    <!-- untappd description -->
+                    {% if match.beer.beer_description %}
+                    <div class="container">
+                        <h5 class = "row">
+                            <b>From the brewery</b> 
+                        </h5>
+                        <div class = "row">
+                            <div class = "col-12 description2" style="white-space: wrap; overflow: hidden; text-overflow: ellipsis;">
+                                <i>{{ match.beer.beer_description }}</i>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <br style="line-height: 10px;">
+                    
+                    <!-- glasses -->
+                    {% if results.data.beer.style.glasses %}
+                    <div class="container">
+                        <h5 class = "row">
+                            <b>We think this beer is best enjoyed in</b> 
+                        </h5>
+                        <br style="line-height: 3px;">
+                        {% for glass in results.data.beer.style.glasses %}
+                        <div class="col">
+                            <div class = "row">
+                                <div class = "col glass" style="white-space: wrap; overflow: hidden; text-overflow: ellipsis;">
+                                    <h6><b>{{ glass.name }}</b></h6><i>{{ glass.description }}</i>
+                                </div>
+                            </div>
+                        </div>
+                        <br style="line-height: 3px;">
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                        
+                    
+                </div>
+            
+            {% else %}
+            <h1>No results found, please try another beer</h1>
             {% endif %}
+            
+            
+            
+            
+            
+            
+
   
   <!-- map -->
-  <body onload="initialize()">
-    <div style="margin-top:220px" id="map">
-      <input id="address" type="text" value="1035 20th St S, Ste B" style="visibility: hidden; margin-top: 20px">
-      <input id="button" type="button" value="Geocode" onclick="codeAddress()" style="visibility: hidden">
-    </div>
-    <div id="map-canvas" style="height:90%;top:30px;padding:300px;"></div>
-  </body>
-
+<body onload="initialize()">
+<div style="margin-top:220px" id="map">
+  <input id="address" type="text" value="1035 20th St S, Ste B" style="visibility: hidden; margin-top: 20px">
+  <input id="button" type="button" value="Geocode" onclick="codeAddress()" style="visibility: hidden">
+</div>
+<div id="map-canvas" style="height:90%;top:30px;padding:300px;"></div>
+</body>
 
 <div id="key" style="visibility: hidden;">
     {{ google_api }}
 </div>
 <!-- Google Map Settings-->
 <script>
-    var src = document.getElementById('key').text.trim()
+    var src = document.getElementById('key').innerHTML.trim()
     document.write('<script src="https://maps.googleapis.com/maps/api/js?key=' + src + '" type="text/javascript"><\/script>');
 </script>
 <script>
@@ -167,8 +234,8 @@ map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 }
 
 function codeAddress() {
+var address = document.getElementById('name1').innerHTML.trim()
 if (address){
-    var address = document.getElementById('address1').value
     if (address == "") {
         address = "1035 20th St S, Ste B"
     }
@@ -193,19 +260,7 @@ geocoder.geocode( { 'address': address}, function(results, status) {
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
   crossorigin="anonymous"></script>
 <script type="text/javascript">
-try {
-    for (x=0; x<5; x++)
-    {
-        document.getElementsByClassName('style')[x].innerHTML = parseInt(document.getElementsByClassName('style')[x].innerHTML)
-    	document.getElementsByClassName('abv')[x].innerHTML = parseInt(document.getElementsByClassName('abv')[x].innerHTML)
-    }
-}
-catch (e) {
-    console.log("Error loading data from API")
-}
-
-
-    setTimeout(function(){ $('#button').click() }, 1000);
+    setTimeout(function(){ $('#button').click() }, 2000);
 </script>
 
 <style type="text/css">
@@ -220,12 +275,12 @@ catch (e) {
 
 </style>
 
-    <script type="text/javascript">
-        $(".description").hover(function(){
-            $(this).css("white-space", "normal");
-            }, function(){
-            $(this).css("white-space", "nowrap");
-        });
-    </script>
+<script type="text/javascript">
+    $(".description").hover(function(){
+        $(this).css("white-space", "normal");
+        }, function(){
+        $(this).css("white-space", "nowrap");
+    });
+</script>
 
 {% endblock %}

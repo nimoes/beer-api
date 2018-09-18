@@ -1,5 +1,6 @@
 import json
 from jsonmerge import merge
+import re
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
@@ -7,20 +8,22 @@ from django.template import loader
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth
+from django.views.generic.base import RedirectView
 
 # for user signup
-from beerapp.forms import CustomUserCreationForm
+from beerapp.forms import CustomUserCreationForm, LikeForm, DisikeForm
 from django.urls import reverse_lazy
 from django.views import generic
 
 # for api
 from beerapp.credentials import map_api
 
+# for likes
+from beerapp.models import *
 
 from beerapp.ratebeer import *
 from beerapp.openbrewery import *
 from beerapp.untappd import *
-
 
 @csrf_exempt
 def index(request):
@@ -48,28 +51,62 @@ def search_view(request, search='Good People'):
     interact with the website
     
     """
-    q = request.GET.get('q')
-    search_type = request.GET.get('search_type')
     
-    if search_type == 'beer':
-        results = searchBeers(query=q)
-        # print(results)
-    elif search_type == 'brewery':
-        results = brewerySearch(query=q)
-        # print(results)
-    else:
-        results = topBeers(10)
-
-    return render(request, 'search_results.html', context={
-        'results': results,
-        'search_type': search_type, 
-    })
+    if request.method == 'GET':
+        print("this is a get request")
+        q = request.GET.get('q')
+        search_type = request.GET.get('search_type')
+        
+        if search_type == 'beer':
+            results = searchBeers(query=q)
+            # print(results)
+        elif search_type == 'brewery':
+            results = brewerySearch(query=q)
+            # print(results)
+        else:
+            results = topBeers(10)
+    
+        return render(request, 'search_results.html', context={
+            'results': results,
+            'search_type': search_type, 
+        })
     
 
 @login_required
 def user_favorites_view(request):
-    template = loader.get_template('profile.html')
-    return HttpResponse(template.render())
+    if request.method == 'POST':
+        print("this is a post request")
+        if 'dislike' in request.POST:
+            dislike_form = DisikeForm(request.POST)
+        elif 'like' in request.POST:
+            like_form = LikeForm(request.POST)
+        else:
+            print('Probably messed up')
+        
+        if request.user is not None:
+            print(request.user)
+            if like_form.is_valid():
+                instance = Like(name=like_form.cleaned_data['name'], brewid=like_form.cleaned_data['brewid'], username=request.user)
+                likes = Like.objects.filter(username=request.user)
+                instance.save()
+            elif dislike_form.is_valid():
+                instance = Dislike(name=dislike_form.cleaned_data['name'], brewid=dislike_form.cleaned_data['brewid'], username=request.user)
+                dislikes = Dislike.objects.filter(username=request.user)
+                instance.save()
+ 
+        request.method = 'GET'
+        HttpResponseRedirect('my_profile')
+    
+    if request.method == 'GET':
+        try:
+            likes = Like.objects.filter(username=request.user)
+            dislikes = Dislike.objects.filter(username=request.user)
+        except FieldError():
+            pass
+        return render(request, 'profile.html', context={
+            'likes': likes,
+            'dislikes': dislikes
+        })
     
 
 @csrf_exempt
@@ -100,24 +137,126 @@ def beer_detail_view(request, beer_id=1):
             untappd = searchTapBeer(rateBeer['brewer']['name'], rateBeer['name'])
             if untappd['response']:
                 # print(untappd['response'])
+                # print(len(untappd['response']['beers']['items']))
+                
+                # if the search is too restrictive with brewer and beer
+                if len(untappd['response']['beers']['items']) < 1:
+                    untappd = searchTapBeerOnly(rateBeer['name'])
+                
                 for untappdBeer in untappd['response']['beers']['items']:
-                    print(untappdBeer['brewery']['brewery_name'])
-                    print(untappdBeer['beer']['beer_name'])
-                    print(untappdBeer['brewery']['location']['brewery_state'])
-                    print(untappdBeer['brewery']['contact']['url'])
+                    print("untappdBrewery " + str(untappdBeer['brewery']['brewery_name']))
+                    print("untappdBeer " + str(untappdBeer['beer']['beer_name']))
+                    print("untappdState " + str(untappdBeer['brewery']['location']['brewery_state']))
+                    print("untappdStyle " + str(untappdBeer['beer']['beer_style']))
+                    print("untappdABV " + str(untappdBeer['beer']['beer_abv']))
+                    
+                    print("rbBrewery " + str(rateBeer['brewer']['name']))
+                    print("rbBeer " + str(rateBeer['name']))
+                    print("rbState " + str(rateBeer['brewer']['state']['name']))
+                    print("rbStyle " + str(rateBeer['style']['name']))
+                    print("rbABV " + str(rateBeer['abv']))
+                    
+                    uBrewery = untappdBeer['brewery']['brewery_name']
+                    uBeer = untappdBeer['beer']['beer_name']
+                    uState = untappdBeer['brewery']['location']['brewery_state']
+                    uStyle = untappdBeer['beer']['beer_style']
+                    uABV = untappdBeer['beer']['beer_abv']
+                    
+                    rbBrewery = rateBeer['brewer']['name']
+                    rbBeer = rateBeer['name']
+                    rbState = rateBeer['brewer']['state']['name']
+                    rbStyle = rateBeer['style']['name']
+                    rbABV = rateBeer['abv']
                     
                     # Logic beer match
+                    count = 0
+                    total = 0
+                    if (rbState and uState):
+                        total+=1
+                        # Meshing types
+                        if len(uState) <= 2: uState = us_state_abbrev.get(uState, None)
+                        
+                        # Match check
+                        if (rbState == uState): count+=1
+                        
+                    if (rbBrewery and uBrewery):
+                        total+=1
+                        # Meshing types
+                        if "Company" in rbBrewery: rbBrewery.replace("Company", "Co")
+                        if "Company" in uBrewery: rbBrewery.replace("Company", "Co")
+                        
+                        # Match check
+                        if (rbBrewery in uBrewery or uBrewery in rbBrewery): count+=1
+                        
+                    if (rbBeer and uBeer):
+                        total+=1
+                        # Meshing types
+            
+                        # Match check
+                        if (rbBeer in uBeer or uBeer in rbBeer): count+=1
+                        
+                    if (uStyle and rbStyle):
+                        total+=1
+                        # Meshing types
+                        rbStyle = re.sub('[^A-Za-z0-9]+', '', rbStyle)
+                        uStyle = re.sub('[^A-Za-z0-9]+', '', uStyle)
+                        
+                        # Match check
+                        if (rbStyle in uStyle or uStyle in rbStyle): count+=1
+                        
+                    if (rbABV and uABV):
+                        total+=1
+                        # Meshing Types
+                        rbABV = '%.2f' % rbABV
+                        uABV = '%.2f' % uABV
+                        
+                        #Match check
+                        if abs(float(rbABV) - float(uABV)) <= 1.1: count+=1
                     
-                    
+                    # Count up matches, divide by total
+                    percent = count/total
+                    if (percent) == 1: 
+                        # all matching criteria
+                        print ('definitely a match: ' + str(percent))
+                        match = untappdBeer
+                        break
+                    elif (percent) >= 0.75:
+                        # probably good enough
+                        print ('most likely a match: ' + str(percent))
+                        match = untappdBeer
+                        break
+                    elif (percent) >= 0.6:
+                        # let it go again and see if it finds a better match
+                        print ('probably a match: ' + str(percent))
+                        match = untappdBeer
+                    elif (percent) >= 0.5:
+                        # probably not a match, but possible if total=2
+                        print ('low confidence match: ' + str(percent))
+                        match = untappdBeer
+                    else:
+                        print ('not a match' + str(percent))
+            else:
+                match = ""
     else:
         return JsonResponse({
             "success": False,
             "msg": "A bad request"
         }, status=400)
+    
         
-    return render(request, 'beer_details_view.html', context={
-        'results': results
-    })
+    if match:
+        print (results)
+        return render(request, 'beer_details_view.html', context={
+            'results': results,
+            'match': match,
+            'google_api': map_api
+            
+        })
+    else:
+        return render(request, 'beer_details_view.html', context={
+            'results': results,
+            'google_api': map_api
+        })
     
 @csrf_exempt
 def brewery_detail_view(request, brewery_id=1):
@@ -165,6 +304,60 @@ def brewery_detail_view(request, brewery_id=1):
             'google_api': map_api,
         })
 
+us_state_abbrev = {
+    'AL': 'Alabama',
+    'AK': 'Alaska',
+    'AZ': 'Arizona',
+    'AR': 'Arkansas',
+    'CA': 'California',
+    'CO': 'Colorado',
+    'CT': 'Connecticut',
+    'DC': 'District of Columbia',
+    'DE': 'Delaware',
+    'FL': 'Florida',
+    'GA': 'Georgia',
+    'HI': 'Hawaii',
+    'ID': 'Idaho',
+    'IL': 'Illinois',
+    'IN': 'Indiana',
+    'IA': 'Iowa',
+    'KS': 'Kansas',
+    'KY': 'Kentucky',
+    'LA': 'Louisiana',
+    'ME': 'Maine',
+    'MD': 'Maryland',
+    'MA': 'Massachusetts',
+    'MI': 'Michigan',
+    'MN': 'Minnesota',
+    'MS': 'Mississippi',
+    'MO': 'Missouri',
+    'MT': 'Montana',
+    'NE': 'Nebraska',
+    'NV': 'Nevada',
+    'NH': 'New Hampshire',
+    'NJ': 'New Jersey',
+    'NM': 'New Mexico',
+    'NY': 'New York',
+    'NC': 'North Carolina',
+    'ND': 'North Dakota',
+    'OH': 'Ohio',
+    'OK': 'Oklahoma',
+    'OR': 'Oregon',
+    'PA': 'Pennsylvania',
+    'RI': 'Rhode Island',
+    'SC': 'South Carolina',
+    'SD': 'South Dakota',
+    'TN': 'Tennessee',
+    'TX': 'Texas',
+    'UT': 'Utah',
+    'VT': 'Vermont',
+    'VA': 'Virginia',
+    'WA': 'Washington',
+    'WV': 'West Virginia',
+    'WI': 'Wisconsin',
+    'WY': 'Wyoming',
+    'PR': 'Puerto Rico'
+}
 
 beerSearchResponse = """
 {

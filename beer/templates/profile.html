@@ -1,21 +1,34 @@
 {% extends 'index.html' %}
 
 {% block content %}
+
 <div class="container">
-    <h1>My favorites</h1>
+    <br/><br/><br/>
+    
+    <h1 style="text-align:center">My favorites</h1>
     <body>
-        <ul>
-        {% for eachitem in favorites %}
-            <li>
-            {{ eachitem }}
-            </li>
-        {% empty %}
-            <li>
-            no favorites added
-            </li>
-        {% endfor %}
-        </ul>
+        {% if likes %}
+        <div class="col">
+            <h3>Breweries I like: </h3>
+            
+            {% for like in likes %}
+                <br style="line-height: 4px;">
+                <div class="row" id='{{like.brewid}}'>{{like.name}}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+            
+        {% if dislikes %}
+        <div class="col">
+            <h2>Breweries I don't enjoy: </h2>
+                {% for dislike in dislikes %}
+                    <br style="line-height: 4px;">
+                    <div class="row" id='{{dislike.brewid}}'>{{dislike.name}}</div>
+                {% endfor %}
+        </div>
+        {% endif %}
     </body>
 </div>
+
 
 {% endblock %}

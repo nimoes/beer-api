@@ -6,7 +6,7 @@
             
             {% if results.data.brewerSearch %}
             {% for brewer in results.data.brewerSearch.items %}
-            <h1 style="margin-top: 200px; text-align: center">
+            <h1 id="name1" style="margin-top: 200px; text-align: center">
                 {{ brewer.name }}
             </h1>
             
@@ -92,7 +92,7 @@
                     
                     {% for beer in results.data.beersByBrewer.items %}
                     <!-- beer results -->
-                    <div class = "container" id="result" onclick="location.href='/beer_detail_view/{{ beer.beer.bid }}'">
+                    <div class = "container" id="result" onclick="location.href='/beer?id={{ beer.id }}&name={{ beer.brewer.name }}'">
                     
                         <div class = "row align-items-center" style="text-align: center;">
                             <div class = "col-2 image">
@@ -114,7 +114,7 @@
                                 {{ beer.abv }}
                             </div>
                             <div class = "col-1 details">
-                                <a href="/beer_detail_view/{{ beer.id }}">Details</a>
+                                <a href="/beer?id={{ beer.id }}&name={{ beer.brewer.name }}">Details</a>
                             </div>
                         </div>
                         <br style="line-height: 10px;">
@@ -168,9 +168,9 @@ var map;
     }
 
     function codeAddress() {
-        var address = document.getElementById('address1').text.trim();
+        var address = document.getElementById('name1').innerHTML.trim();
         if (!address) {
-            address = "1035 20th St S, Ste B"
+            address = "114 14th St S, Birmingham, AL 35233"
         }
         geocoder.geocode( { 'address': address}, function(results, status) {
           if (status == google.maps.GeocoderStatus.OK) {

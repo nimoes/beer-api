@@ -27,9 +27,12 @@ urlpatterns = [
     path('beer', views.beer_detail_view, name="beer_detail_view"),
     path('brewery', views.brewery_detail_view, name="brewery_detail_view"),
     
-    path('my_profile/', views.user_favorites_view, name='my_profile'),
+    
     # includes users account settings
     path('users/', include('django.contrib.auth.urls')),
     # for user signups
     path('users/', include('beerapp.urls')),
+    
+    # user's likes and dislikes
+    path('my_profile/', views.user_favorites_view, name='my_profile'),
 ]

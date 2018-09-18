@@ -1,9 +1,9 @@
 Django==2.0.4
 certifi==2018.8.24
 chardet==3.0.4
-django-tables2==1.21.2
 idna==2.7
+jsonmerge==1.5.1
+jsonschema==2.6.0
 pytz==2018.5
 requests==2.19.1
 urllib3==1.23
-jsonmerge==1.5.1

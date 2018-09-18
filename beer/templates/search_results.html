@@ -55,8 +55,24 @@
                         {{brewer.city}}, {{brewer.state.name}} {{brewer.zip}}
                     </div>
                     <div class = "col-1">
-                        <a href="/user/like/{{ brewer.id }}">Like</a>
-                        <a href="/user/dislike/{{ brewer.id }}">Disike</a>
+                        
+                        <form action="{% url 'my_profile' %}" method="POST" style="visibility: hidden; height: 0px">
+                            {% csrf_token %}
+                            <input id="idholder"        value="{{brewer.id}}"   name="brewid"    type="hidden"   style="visibility: hidden; height: 0px"/>
+                            <input id="nameholder"      value="{{brewer.name}}" name="name"      type="hidden"   style="visibility: hidden; height: 0px"/>
+                            <input id="{{ brewer.id }}" value="Submit"          name="like"      type="submit"   style="visibility: hidden; height: 0px"/>
+                        </form>
+                        
+                        <!--<form action="{% url 'my_profile' %}" method="POST" style="visibility: hidden; height: 0px">-->
+                        <!--    {% csrf_token %}-->
+                        <!--    <input id="idholder"           value="{{brewer.id}}"   name="brewid"    type="hidden"   style="visibility: hidden; height: 0px"/>-->
+                        <!--    <input id="nameholder"         value="{{brewer.name}}" name="name"      type="hidden"   style="visibility: hidden; height: 0px"/>-->
+                        <!--    <input id="{{ brewer.id }}"    value="Submit"          name="dislike"   type="submit"   style="visibility: hidden; height: 0px"/>-->
+                        <!--</form>-->
+                        
+                        <a href="javascript:Like({{ brewer.id }});"    name="likes"    value="{{ brewer.id }}">Like</a>
+                        <a href="javascript:Dislike({{ brewer.id }});" name="dislikes" value="{{ brewer.id }}">Dislike</a>
+                        
                     </div>
                     <div class = "col-1">
                         <a href="/brewery?id={{ brewer.id }}&name={{ brewer.name }}">Details</a>
@@ -110,7 +126,7 @@
                     
                     {% for beer in results.data.beerSearch.items %}
                     <!-- beer results -->
-                    <div class = "container" id="result" onclick="location.href='/beer_detail_view/{{ beer.beer.bid }}'">
+                    <div class = "container" id="result" onclick="location.href='/beer?id={{ beer.id }}&name={{ beer.brewer.name }}'">
                         <div class = "row align-items-center" style="text-align: center;">
                            <div class = "col-2 logo">
                                 <img src="{{ beer.imageUrl }}" alt="Smiley face" height="156em" width="76em">
@@ -128,7 +144,7 @@
                                 {{ beer.abv }}
                             </div>
                             <div class = "col-1 detail">
-                                <a href="/beer_detail_view/{{ beer.id }}">Details</a>
+                                <a href="/beer?id={{ beer.id }}&name={{ beer.brewer.name }}">Details</a>
                             </div>
                         </div>
                         <br style="line-height: 10px;">
@@ -144,6 +160,15 @@
                 </ul>
             {% endif %}
     </section>
+    
+    <script type="text/javascript">
+        function Like(thisid) {
+            document.getElementById(thisid).click();   
+        }
+        function Dislike(thisid) {
+            document.getElementById(thisid).click();
+        }
+    </script>
     
     <style type="text/css">
     #result:hover {
@@ -176,5 +201,24 @@
         document.getElementsByClassName('abv')[x].innerHTML = parseFloat(document.getElementsByClassName('abv')[x].innerHTML).toFixed(1);
     }
     </script>    
+    
+    // <script>
+    // $(document).ready(function() {
+    //   $("#test").submit(function(event){
+    //         $.ajax({
+    //              type:"POST",
+    //              url:"/my_profile/",
+    //              data: {
+    //                     'name': $('#test').val()
+    //                     'brewid': $('#brewid').val()
+    //                     },
+    //              success: function(){
+    //                  $('#message').html("<h2>Form Submitted</h2>") 
+    //              }
+    //         });
+    //         return false; //<---- move it here
+    //   });
+    // });
+    // </script>
     
 {% endblock %}

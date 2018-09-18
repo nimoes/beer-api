@@ -3,22 +3,45 @@
 
 {% block content %}
 <section>
-    <div class="container">
-    <h1>Login</h1>
-        <form method="post">
+    <br/><br/><br/><br/><br/>
+    <div class="container" style="height: 25em; text-align: center; vertical-align: middle;">
+    <div class="row align-items-center">
+        {% if user.is_authenticated %}
+        <h1 class="col" style="text-align: middle; vertical-align: middle;">You are already logged in, {{ user.username }}</h1>
+        </div>
+        </div>
+        </section>
+        {% else %}
+        <h1 class="col" style="text-align: middle; vertical-align: middle;">Login</h1>
+    </div>
+    <br/>
+    <div class="row align-items-center">
+        <form class="col" method="post" style="vertical-align: middle;">
             {% csrf_token %}
             {{ form.as_p }}
-            <div class="form-group">
-                <button type="submit" class="btn-sm btn-outline-primary" value="login">Login</button>
+            <div class="col form-group" style="visibility: hidden; height: 0px">
+                <button id="submit" type="submit" class="btn-sm btn-outline-primary" value="login">Login</button>
             </div>
         </form>
     </div>
+    <div class="row align-items-center">
+        <div class="col form-group" style="text-align: middle; vertical-align: middle;">
+            <button type="submit" class="btn-sm btn-outline-primary" value="login"
+            onclick="document.getElementById('submit').click()">Login</button>
+        </div>
+    </div>
+    </div>
+    </div>
+    <br/><br/><br/><br/><br/>
 </section>
-{% endblock %}
+        {% endif %}
+<script type="text/javascript">
+    document.getElementsByTagName('label')[0].style.visibility = "hidden"
+    document.getElementsByTagName('label')[0].style.width = "0px"
+    document.getElementById('id_username').placeholder = "Username"
+    document.getElementsByTagName('label')[1].style.visibility = "hidden"
+    document.getElementsByTagName('label')[1].style.width = "0px"
+    document.getElementById('id_password').placeholder = "Password"
+</script>
 
-            <!--<div class="form-group">-->
-            <!--    <input type="text" name="username" placeholder="Username">-->
-            <!--</div>-->
-            <!--<div class="form-group">-->
-            <!--    <input type="text" name="password" placeholder="Password">-->
-            <!--</div>-->
+{% endblock %}

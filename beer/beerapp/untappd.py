@@ -19,12 +19,17 @@ def getTapBeer(BID=False):
 def searchTapBeer(breweryName=False, beerName=False):
       if not beerName: return None;
       
-      if breweryName and beerName: query = str(breweryName) + str(beerName)
+      if breweryName and beerName: query = str(breweryName) + " " + str(beerName)
       else: query = beerName;
       
       r = requests.get('https://api.untappd.com/v4/search/beer?q={}{}'.format(query, auth_token))
       return r.json()
 
+def searchTapBeerOnly(beerName=False):
+      if not beerName: return None;
+      query = str(beerName)
+      r = requests.get('https://api.untappd.com/v4/search/beer?q={}{}'.format(query, auth_token))
+      return r.json()
 
 
 

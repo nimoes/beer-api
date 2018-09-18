@@ -1,6 +1,7 @@
 # for custom user creation
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.forms import ModelForm
 
 # from django.utils.timezone import now
 # from decimal import Decimal
@@ -10,6 +11,29 @@ from django.contrib.auth.models import AbstractUser
 class CustomUser(AbstractUser):
     fav_beer = models.CharField(max_length=255)
     fav_brewery = models.CharField(max_length=255)
+
+
+# Liked breweries model
+class Like(models.Model):
+    brewid = models.CharField(max_length=7)
+    name = models.CharField(max_length=255)
+    username = models.CharField(max_length=255)
+    objects = models.Manager()
+    def __str__(self):
+        return self.name
+
+        
+        
+# Dislike breweries model 
+class Dislike(models.Model):
+    brewid = models.CharField(max_length=7)
+    name = models.CharField(max_length=255)
+    username = models.CharField(max_length=255)
+    objects = models.Manager()
+    def __str__(self):
+        return self.name
+        
+
 
 
 # '''

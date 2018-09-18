@@ -1,7 +1,8 @@
 <div>
 {% if user.is_authenticated %}
-    <div class="alert-sm alert-success offset-md-4" role="alert">
-      <p> Hello {{ user.username }}! <br/> <a href="{% url 'logout' %}">logout</a> </p>
+    <div class="alert-sm alert-light offset-md-4" role="alert">
+      <div style="background-color: rgba(0, 0, 0, 0.4) !important; color: white"> Hello {{ user.username }}! 
+      <br/> <a href="{% url 'my_profile' %}">my profile</a> / <a href="{% url 'logout' %}">logout</a> </div>
     </div>
 {% else %}
     <div class="alert-sm fade show offset-md-4" role="alert">

@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin
 
 # Register your models here.
 from .forms import CustomUserCreationForm, CustomUserChangeForm
-from beerapp.models import CustomUser
+from beerapp.models import CustomUser, Like, Dislike
 
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
@@ -12,3 +12,5 @@ class CustomUserAdmin(UserAdmin):
     model = CustomUser
 
 admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(Like)
+admin.site.register(Dislike)
