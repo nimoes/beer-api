@@ -46,7 +46,7 @@ header .navbar {
 
 @media (max-width: 1920px) {
   header .navbar {
-    background: rgba(0, 0, 0, 0.4) !important;
+    background: rgba(0, 0, 0, 1) !important;
     padding-top: .5rem;
     padding-bottom: .5rem;
   }
@@ -145,7 +145,7 @@ header .navbar.navbar-light .nav-link.active {
 
 .site-hero.overlay:before {
   content: "";
-  background: #180E04;
+  background: #060606;
   width: 100%;
   z-index: 1;
   position: absolute;

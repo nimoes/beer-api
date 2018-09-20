@@ -3,15 +3,15 @@ from jsonmerge import merge
 import re
 
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect, HttpResponseNotFound
 from django.template import loader
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from django.contrib import auth
+from django.contrib import auth, messages
 from django.views.generic.base import RedirectView
 
 # for user signup
-from beerapp.forms import CustomUserCreationForm, LikeForm, DisikeForm
+from beerapp.forms import CustomUserCreationForm, LikeForm, LikeBeerForm
 from django.urls import reverse_lazy
 from django.views import generic
 
@@ -25,10 +25,12 @@ from beerapp.ratebeer import *
 from beerapp.openbrewery import *
 from beerapp.untappd import *
 
+from django.utils.timezone import now
+
 @csrf_exempt
 def index(request):
     template = loader.get_template('index.html')
-    return HttpResponse(template.render())
+    return render(request, 'index.html')
 
 
 class SignUp(generic.CreateView):
@@ -56,12 +58,25 @@ def search_view(request, search='Good People'):
         print("this is a get request")
         q = request.GET.get('q')
         search_type = request.GET.get('search_type')
+        try: 
+            page = request.GET.get('p')
+        except:
+            page = ""
         
         if search_type == 'beer':
-            results = searchBeers(query=q)
+            if page:
+                numAfter = int(page) * 10
+                results = searchBeers(query=q, first=10, after=numAfter)
+                pass
+            else:
+                results = searchBeers(query=q)
             # print(results)
         elif search_type == 'brewery':
-            results = brewerySearch(query=q)
+            if page:
+                numAfter = int(page) * 5
+                results = brewerySearch(query=q, first=5, after=numAfter)
+            else:
+                results = brewerySearch(query=q)
             # print(results)
         else:
             results = topBeers(10)
@@ -70,44 +85,115 @@ def search_view(request, search='Good People'):
             'results': results,
             'search_type': search_type, 
         })
-    
 
+
+'''
+This function allows users to add their favorite breweries and beers
+to their respective profiles.
+'''
 @login_required
-def user_favorites_view(request):
+def adds_to_favorites(request):
+    
     if request.method == 'POST':
-        print("this is a post request")
-        if 'dislike' in request.POST:
-            dislike_form = DisikeForm(request.POST)
-        elif 'like' in request.POST:
-            like_form = LikeForm(request.POST)
-        else:
-            print('Probably messed up')
+        print('POST - ' + str(request.POST))
         
-        if request.user is not None:
-            print(request.user)
-            if like_form.is_valid():
-                instance = Like(name=like_form.cleaned_data['name'], brewid=like_form.cleaned_data['brewid'], username=request.user)
-                likes = Like.objects.filter(username=request.user)
-                instance.save()
-            elif dislike_form.is_valid():
-                instance = Dislike(name=dislike_form.cleaned_data['name'], brewid=dislike_form.cleaned_data['brewid'], username=request.user)
-                dislikes = Dislike.objects.filter(username=request.user)
-                instance.save()
- 
-        request.method = 'GET'
-        HttpResponseRedirect('my_profile')
+        likes = ""
+        beer_likes = ""
+        
+        if 'brewid' in request.POST:
+            like_form = LikeForm(request.POST)
+            print(like_form)
+            if (request.user is not None) and like_form.is_valid():
+                print("\nCreating instance of like for user\n\nAdding brewery to your favorites...")
+                instance = Like(
+                    name=like_form.cleaned_data['name'], 
+                    brewid=like_form.cleaned_data['brewid'], 
+                    imageUrl=like_form.cleaned_data['imageUrl'], 
+                    username=request.user
+                    )
+                # if the name of the brewery does not exist in list of Like objects
+                if Like.objects.filter(name=like_form.cleaned_data['name']).count() == 0:
+                    # assign and save instance
+                    likes = Like.objects.filter(username=request.user)
+                    print("\nSaving instance of like")
+                    instance.save()
+                else:
+                    print("\nThis brewery already exists in your profile.")
+                    
+        elif 'beerid' in request.POST:
+            beer_form = LikeBeerForm(request.POST)
+            print(beer_form)
+            if (request.user is not None) and beer_form.is_valid():
+                print("\nCreating instance of like for user\n\nAdding beer to your favorites...")
+                instance = LikeBeer(
+                    beername = beer_form.cleaned_data['beername'], 
+                    beerid = beer_form.cleaned_data['beerid'], 
+                    beerimg = beer_form.cleaned_data['beerimg'],
+                    username = request.user
+                    )
+                
+                # if the name of the beer does not exist in list of Like objects
+                if LikeBeer.objects.filter(beername=beer_form.cleaned_data['beername']).count() == 0:
+                    # assign and save instance
+                    beer_likes = LikeBeer.objects.filter(username=request.user)
+                    print("\nSaving instance of like")
+                    instance.save()
+                else:
+                    print("\nThis beer already exists in your profile.")
+
+        return HttpResponseRedirect('/my_profile/')
     
     if request.method == 'GET':
         try:
+            beer_likes = LikeBeer.objects.filter(username=request.user)
             likes = Like.objects.filter(username=request.user)
-            dislikes = Dislike.objects.filter(username=request.user)
-        except FieldError():
-            pass
+
+        except Exception as e:
+            print(str(e))
+            
+        print("retrieving favorites for the user")
+        # for like in likes:
+        #     print(like.imageUrl)
+        # for beerlike in beer_likes:
+        #     print(beerlike.beerimg)
+
         return render(request, 'profile.html', context={
             'likes': likes,
-            'dislikes': dislikes
+            'beer_likes': beer_likes
         })
-    
+
+
+'''
+This function is invoked when a user wants to remove his/her favorite beer or
+brewery from his/her list of favorites. Only POST request is accepted.
+'''
+@login_required
+def remove_item(request):
+    if request.method == 'POST':
+        beer_name = request.POST.get('beer_name')
+        brewery_name = request.POST.get('brewery_name')
+        if brewery_name:
+            try:
+                print(request.POST)
+                print(brewery_name)
+                brewery = Like.objects.filter(name=brewery_name)
+            except Exception as e:
+                print(str(e))
+                return HttpResponseNotFound('\nthis brewery does not exist')
+            brewery.delete()
+            messages.success(request, 'Item has been successfully removed from your favorites.')
+            return HttpResponseRedirect('/my_profile')
+            
+        elif beer_name:
+            try:
+                beer = LikeBeer.objects.filter(beername=beer_name)
+            except Exception as e:
+                return HttpResponseNotFound('\nthis beer does not exist')
+            beer.delete()
+            messages.success(request, 'Item has been successfully removed from your favorites.')
+            return HttpResponseRedirect('/my_profile')
+    else:
+        return HttpResponse('invalid HTTP method')
 
 @csrf_exempt
 def brewery_list_view(request, brewery_name='Good People'):
@@ -142,17 +228,18 @@ def beer_detail_view(request, beer_id=1):
                 # if the search is too restrictive with brewer and beer
                 if len(untappd['response']['beers']['items']) < 1:
                     untappd = searchTapBeerOnly(rateBeer['name'])
+                    match = ""
                 
                 for untappdBeer in untappd['response']['beers']['items']:
                     print("untappdBrewery " + str(untappdBeer['brewery']['brewery_name']))
                     print("untappdBeer " + str(untappdBeer['beer']['beer_name']))
-                    print("untappdState " + str(untappdBeer['brewery']['location']['brewery_state']))
+                    # print("untappdState " + str(untappdBeer['brewery']['location']['brewery_state']))
                     print("untappdStyle " + str(untappdBeer['beer']['beer_style']))
                     print("untappdABV " + str(untappdBeer['beer']['beer_abv']))
                     
                     print("rbBrewery " + str(rateBeer['brewer']['name']))
                     print("rbBeer " + str(rateBeer['name']))
-                    print("rbState " + str(rateBeer['brewer']['state']['name']))
+                    # print("rbState " + str(rateBeer['brewer']['state']['name']))
                     print("rbStyle " + str(rateBeer['style']['name']))
                     print("rbABV " + str(rateBeer['abv']))
                     
@@ -164,7 +251,10 @@ def beer_detail_view(request, beer_id=1):
                     
                     rbBrewery = rateBeer['brewer']['name']
                     rbBeer = rateBeer['name']
-                    rbState = rateBeer['brewer']['state']['name']
+                    if rateBeer['brewer']['state'] is not None:
+                        rbState = rateBeer['brewer']['state']['name']
+                    else:
+                        rbState = ""
                     rbStyle = rateBeer['style']['name']
                     rbABV = rateBeer['abv']
                     
@@ -266,7 +356,8 @@ def brewery_detail_view(request, brewery_id=1):
     brewery_id = request.GET.get('id')
     brewery_name = request.GET.get('name')
     if request.method == 'GET':
-            
+        
+        match = False
         if  brewery_name and brewery_id: 
             results = merge(brewerySearch(str(brewery_name)) , beersByBrewer(int(brewery_id)) )
             # results = ""

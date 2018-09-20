@@ -60,10 +60,10 @@
                             <div class="row align-items-center">
                                     {% if match.beer.beer_abv %}
                                         <div class = "col-3 offset-3" id="abv" style="text-align: left"> <h5>ABV</h5> </div> 
-                                        <div class = "col" id="abvval" style="text-align: left"> <i>{{match.beer.beer_abv}}</i> </div>
+                                        <div class = "col" id="abvval" style="text-align: left"> <i>{{match.beer.beer_abv|floatformat:-2}}</i> </div>
                                     {% else %}
                                         <div class = "col-3 offset-3" id="abv" style="text-align: left"> <h5>ABV</h5> </div> 
-                                        <div class = "col" id="abvval" style="text-align: left"> <i>{{results.data.beer.abv}}</i> </div>
+                                        <div class = "col" id="abvval" style="text-align: left"> <i>{{results.data.beer.abv|floatformat:-2}}</i> </div>
                                     {% endif %}
                             </div>
                             
@@ -72,10 +72,10 @@
                             <div class="row align-items-center">
                                     {% if match.beer.beer_ibu %}
                                         <div class = "col-3 offset-3" id="ibu" style="text-align: left"> <h5>IBU</h5> </div> 
-                                        <div class = "col" id="ibuval" style="text-align: left"> <i>{{match.beer.beer_ibu}}</i> </div>
+                                        <div class = "col" id="ibuval" style="text-align: left"> <i>{{match.beer.beer_ibu|floatformat:-2}}</i> </div>
                                     {% else %}
                                         <div class = "col-3 offset-3" id="ibu" style="text-align: left"> <h5>IBU</h5> </div>
-                                        <div class = "col" id="ibuval" style="text-align: left"> <i>{{results.data.beer.ibu}}</i> </div>
+                                        <div class = "col" id="ibuval" style="text-align: left"> <i>{{results.data.beer.ibu|floatformat:-2}}</i> </div>
                                     {% endif %}
                             </div> 
                             

@@ -40,7 +40,7 @@
             {% for brewer in results.data.brewerSearch.items %}
             <!-- brewery results -->
             <div class = "container" id="result" onclick="location.href='/brewery?id={{ brewer.id }}&name={{ brewer.name }}'">
-                <div class = "row align-items-center" style="text-align: center;">
+                <div class = "row align-items-center" style="text-align: center; height: 200px">
                    <div class = "col-3">
                         <img src="{{ brewer.imageUrl }}" alt="Smiley face" style="max-width: 95%; max-height:95%">
                     </div>
@@ -58,20 +58,15 @@
                         
                         <form action="{% url 'my_profile' %}" method="POST" style="visibility: hidden; height: 0px">
                             {% csrf_token %}
-                            <input id="idholder"        value="{{brewer.id}}"   name="brewid"    type="hidden"   style="visibility: hidden; height: 0px"/>
-                            <input id="nameholder"      value="{{brewer.name}}" name="name"      type="hidden"   style="visibility: hidden; height: 0px"/>
-                            <input id="{{ brewer.id }}" value="Submit"          name="like"      type="submit"   style="visibility: hidden; height: 0px"/>
+                            <input id="idholder" value="{{brewer.id}}" name="brewid" type="hidden" style="visibility: hidden; height: 0px"/>
+                            <input id="nameholder" value="{{brewer.name}}" name="name" type="hidden" style="visibility: hidden; height: 0px"/>
+                            <input id="urlholder" value="{{brewer.imageUrl}}" name="imageUrl" type="hidden" style="visibility: hidden; height: 0px"/>
+                            <input id="typeholder" value="{{brewer.type}}" name="brewtype" type="hidden" style="visibility: hidden; height: 0px"/>
+                            <input id="addressholder" value="{{ brewer.StreetAddress }}" name="address" type="hidden" style="visibility: hidden; height: 0px"/>
+                            <input id="{{ brewer.id }}" value="Like" name="like" type="submit" style="visibility: hidden; height: 0px"/>
                         </form>
                         
-                        <!--<form action="{% url 'my_profile' %}" method="POST" style="visibility: hidden; height: 0px">-->
-                        <!--    {% csrf_token %}-->
-                        <!--    <input id="idholder"           value="{{brewer.id}}"   name="brewid"    type="hidden"   style="visibility: hidden; height: 0px"/>-->
-                        <!--    <input id="nameholder"         value="{{brewer.name}}" name="name"      type="hidden"   style="visibility: hidden; height: 0px"/>-->
-                        <!--    <input id="{{ brewer.id }}"    value="Submit"          name="dislike"   type="submit"   style="visibility: hidden; height: 0px"/>-->
-                        <!--</form>-->
-                        
-                        <a href="javascript:Like({{ brewer.id }});"    name="likes"    value="{{ brewer.id }}">Like</a>
-                        <a href="javascript:Dislike({{ brewer.id }});" name="dislikes" value="{{ brewer.id }}">Dislike</a>
+                        <a href="javascript:Like({{ brewer.id }});" name="likes" value="{{ brewer.id }}">Like</a>
                         
                     </div>
                     <div class = "col-1">
@@ -92,6 +87,17 @@
             <!-- end brewery results -->
             <hr>
             {% endfor %}
+            <br style="line-height: 10px;">
+            {% if results.data.brewerSearch.items|length > 4 %}
+            <div class = "row">
+                <div class="col align-center" style="text-align: center">
+                <a href='javascript:Next()'>
+                    Next
+                </a>
+                </div>
+            </div>
+            <br style="line-height: 10px;">
+            {% endif %}
             
             {% endif %}
 
@@ -103,17 +109,17 @@
                     <br/>
                     <div class = "container">
                         <div class = "row" style="text-align: center;">
-                            <div class = "col-1">
+                            <div class = "col-2">
                                 Logo
                             </div>
-                            <div class = "col-5">
+                            <div class = "col-4">
                                 Brewery - Beer
                             </div>
-                            <div class = "col-3">
+                            <div class = "col-2">
                                 Style
                             </div>
                             <div class = "col-1">
-                                IBV
+                                IBU
                             </div>
                             <div class = "col-1">
                                 ABV
@@ -127,11 +133,11 @@
                     {% for beer in results.data.beerSearch.items %}
                     <!-- beer results -->
                     <div class = "container" id="result" onclick="location.href='/beer?id={{ beer.id }}&name={{ beer.brewer.name }}'">
-                        <div class = "row align-items-center" style="text-align: center;">
-                           <div class = "col-2 logo">
+                        <div class = "row align-items-center" style="text-align: center; height: 200px">
+                           <div class = "col-2 logo" style="max-width: 90%; max-height:100%">
                                 <img src="{{ beer.imageUrl }}" alt="Smiley face" height="156em" width="76em">
                             </div>
-                            <div class = "col-5 align-middle name">
+                            <div class = "col-4 align-middle name">
                                 {{ beer.brewer.name }} - {{ beer.name }}
                             </div>
                             <div class = "col-2 style">
@@ -142,6 +148,21 @@
                             </div>
                             <div class = "col-1 abv">
                                 {{ beer.abv }}
+                            </div>
+                            <div>
+                                <form action="{% url 'my_profile' %}" method="POST" style="visibility: hidden; height: 0px">
+                                    {% csrf_token %}
+                                    <input id="idholder" value="{{beer.id}}" name="beerid" type="hidden" style="visibility: hidden; height: 0px"/>
+                                    <input id="nameholder" value="{{beer.name}}" name="beername" type="hidden" style="visibility: hidden; height: 0px"/>
+                                    <input id="urlholder" value="{{beer.imageUrl}}" name="beerimg" type="hidden" style="visibility: hidden; height: 0px"/>
+                                    <input id="styleholder" value="{{beer.style.name}}" name="beerstyle" type="hidden" style="visibility: hidden; height: 0px"/>
+                                    <input id="ibuholder" value="{{ beer.ibu }}" name="ibu" type="hidden" style="visibility: hidden; height: 0px"/>
+                                    <input id="abvholder" value="{{beer.abv}}" name="abv" type="hidden" style="visibility: hidden; height: 0px"/>
+                                    <input id="{{ beer.id }}" value="LikeBeer" name="likebeer" type="submit" style="visibility: hidden; height: 0px"/>
+                                </form>
+                                
+                                <a href="javascript:LikeBeer({{ beer.id }});" name="beer_likes" value="{{ beer.id }}">Like</a>
+                                
                             </div>
                             <div class = "col-1 detail">
                                 <a href="/beer?id={{ beer.id }}&name={{ beer.brewer.name }}">Details</a>
@@ -158,16 +179,75 @@
                     <hr>
                     {% endfor %}
                 </ul>
+                <br style="line-height: 10px;">
+                {% if results.data.beerSearch.items|length > 9 %}
+                <div class = "row">
+                    <div class="col align-center" style="text-align: center" id="next">
+                    <a href='javascript:Next()'>
+                        Next
+                    </a>
+                    </div>
+                </div>
+                {% endif %}
+                
             {% endif %}
+            {% if "p=" in request.get_full_path %}
+                <div class = "row">
+                    <div class="col align-center" style="text-align: center" id="back">
+                    <a href='javascript:Back()'>
+                        Back
+                    </a>
+                    </div>
+                </div>
+            {% endif %}
+            
+            
+            <br style="line-height: 10px;"> 
     </section>
     
     <script type="text/javascript">
         function Like(thisid) {
             document.getElementById(thisid).click();   
         }
-        function Dislike(thisid) {
-            document.getElementById(thisid).click();
+
+        function LikeBeer(thisid) {
+            document.getElementById(thisid).click();   
         }
+        
+        function Next() {
+                var loc = location.href;
+                
+                if(location.href.indexOf("p=") > -1) { 
+                    var path = location.href.split('&');
+                    pages = path[path.length - 1]
+                    var page = parseInt(pages.split('=')[1])+1
+                    location.href = path[0] + '&' + path[1]+ "&p=" +page.toString()
+                }
+                else {
+                    loc += loc.indexOf("?") === -1 ? "?" : "&";
+                    location.href = loc + "p=2";
+                }
+            }
+        
+        function Back() {
+                var loc = location.href;
+                
+                if(location.href.indexOf("p=") == -1) { 
+                    console.log("Can't go back any further")
+                }
+                else {
+                    var path = location.href.split('&');
+                    pages = path[path.length - 1]
+                    var page = parseInt(pages.split('=')[1])-1
+                    
+                    if (page == 1) {
+                        location.href = path[0] + '&' + path[1]
+                    } else {
+                        location.href = path[0] + '&' + path[1]+ "&p=" +page.toString()
+                    }
+                }
+        }
+    
     </script>
     
     <style type="text/css">
@@ -182,17 +262,33 @@
     }
     </style>
     
-        <script src="https://code.jquery.com/jquery-3.3.1.min.js"
-              integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-              crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+          integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+          crossorigin="anonymous"></script>
+          
+    <script type="text/javascript">
+        
+        $(document).ready(function() {
+            function Next() {
+                var loc = location.href;
+                
+                if(window.location.href.indexOf("p=") > -1) { 
+                    var path = window.location.pathname.split('/');
+                    path = path[path.length - 1]
+                    console.log(path)
+                }
+                
+                loc += loc.indexOf("?") === -1 ? "?" : "&";
+                location.href = loc + "p=2";
+            }
+        });
     
-        <script type="text/javascript">
-            $(".description").hover(function(){
-                $(this).css("white-space", "normal");
-                }, function(){
-                $(this).css("white-space", "nowrap");
-            });
-        </script>
+        $(".description").hover(function(){
+            $(this).css("white-space", "normal");
+            }, function(){
+            $(this).css("white-space", "nowrap");
+        });
+    </script>
     
     <script type="text/javascript">
     
@@ -201,24 +297,5 @@
         document.getElementsByClassName('abv')[x].innerHTML = parseFloat(document.getElementsByClassName('abv')[x].innerHTML).toFixed(1);
     }
     </script>    
-    
-    // <script>
-    // $(document).ready(function() {
-    //   $("#test").submit(function(event){
-    //         $.ajax({
-    //              type:"POST",
-    //              url:"/my_profile/",
-    //              data: {
-    //                     'name': $('#test').val()
-    //                     'brewid': $('#brewid').val()
-    //                     },
-    //              success: function(){
-    //                  $('#message').html("<h2>Form Submitted</h2>") 
-    //              }
-    //         });
-    //         return false; //<---- move it here
-    //   });
-    // });
-    // </script>
     
 {% endblock %}

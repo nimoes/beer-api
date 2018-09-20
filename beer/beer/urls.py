@@ -34,5 +34,6 @@ urlpatterns = [
     path('users/', include('beerapp.urls')),
     
     # user's likes and dislikes
-    path('my_profile/', views.user_favorites_view, name='my_profile'),
+    path('my_profile/', views.adds_to_favorites, name='my_profile'),
+    path('remove_item/', views.remove_item, name="remove_item"),
 ]

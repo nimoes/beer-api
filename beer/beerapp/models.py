@@ -17,22 +17,24 @@ class CustomUser(AbstractUser):
 class Like(models.Model):
     brewid = models.CharField(max_length=7)
     name = models.CharField(max_length=255)
+    imageUrl = models.CharField(max_length=255)
     username = models.CharField(max_length=255)
     objects = models.Manager()
+    
     def __str__(self):
         return self.name
 
-        
-        
-# Dislike breweries model 
-class Dislike(models.Model):
-    brewid = models.CharField(max_length=7)
-    name = models.CharField(max_length=255)
+
+# Liked beers model
+class LikeBeer(models.Model):
+    beerid = models.CharField(max_length=50)
+    beername = models.CharField(max_length=255)
+    beerimg = models.CharField(max_length=255)
     username = models.CharField(max_length=255)
     objects = models.Manager()
+    
     def __str__(self):
-        return self.name
-        
+        return self.beername
 
 
 

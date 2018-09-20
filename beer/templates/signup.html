@@ -1,17 +1,49 @@
 {% extends 'index.html' %}
 
 {% block content %}
+<br/><br/><br/>
 <section>
     <div class="container">
-    <h1>Sign up</h1>
+    <h1 style="padding-left: 15px">Sign up</h1>
+    <hr>
+    <br/>
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}
+            <br style="line-height: 10px;">
             <div class="form-group">
                 <button type="submit" class="btn-sm btn-outline-primary" value="signup">Sign up</button>
             </div>
         </form>
     </div>
 </section>
+<br/>
 
+<script type="text/javascript">
+    document.getElementsByTagName('form')[0].className = 'container'
+    
+    document.getElementsByTagName('label')[0].className = 'col-3 text-left'
+    document.getElementsByTagName('label')[1].className = 'col-3 text-left'
+    document.getElementsByTagName('label')[2].className = 'col-3 text-left'
+    document.getElementsByTagName('label')[3].className = 'col-3 text-left'
+    document.getElementsByTagName('label')[4].className = 'col-3 text-left'
+    document.getElementsByTagName('label')[5].className = 'col-3 text-left'
+    
+    document.getElementsByTagName('input')[0].className = 'col-4 offset-1 text-center'
+    document.getElementsByTagName('input')[1].className = 'col-4 offset-1 text-center'
+    document.getElementsByTagName('input')[2].className = 'col-4 offset-1 text-center'
+    document.getElementsByTagName('input')[3].className = 'col-4 offset-1 text-center'
+    document.getElementsByTagName('input')[4].className = 'col-4 offset-1 text-center'
+    document.getElementsByTagName('input')[5].className = 'col-4 offset-1 text-center'
+    document.getElementsByTagName('input')[6].className = 'col-4 offset-1 text-center'
+    
+    document.getElementsByClassName('helptext')[0].style.visibility = 'hidden'
+    document.getElementsByClassName('helptext')[0].innerText = ""
+    document.getElementsByClassName('helptext')[0].style.height = '0px'
+    document.getElementsByClassName('helptext')[2].style.visibility = 'hidden'
+    document.getElementsByClassName('helptext')[2].innerText = ""
+    document.getElementsByClassName('helptext')[2].style.height = '0px'
+    
+    document.getElementsByClassName('form-group')[0].style.paddingLeft = '15px'
+</script>
 {% endblock %}
