@@ -43,10 +43,10 @@
                 </div>
                 <div class = "col-3 align-middle" style="text-align: center; vertical-align: center">
                     
-                    <button class="btn-sm btn-link" type="button" data-toggle="modal" data-target="#breweryModal">
+                    <button class="btn-sm btn-link" type="button" data-toggle="modal" data-target="#{{ brewery.name }}">
                         Remove
                     </button>
-                    <div class="modal fade" id="breweryModal" tabindex="-1" role="dialog" aria-labelledby="breweryModalLabel" aria-hidden="true">
+                    <div class="modal fade" id="{{ brewery.name }}" tabindex="-1" role="dialog" aria-labelledby="breweryModalLabel" aria-hidden="true">
                       <div class="modal-dialog" role="document">
                         <div class="modal-content">
                           <div class="modal-header">
@@ -98,10 +98,10 @@
                 </div>
                 <div class = "col-3 align-middle" style="text-align: center; vertical-align: center">
                     
-                    <button class="btn-sm btn-link" type="button" data-toggle="modal" data-target="#beerModal">
+                    <button class="btn-sm btn-link" type="button" data-toggle="modal" data-target="#{{ beer.beername }}">
                         Remove
                     </button>
-                    <div class="modal fade" id="beerModal" tabindex="-1" role="dialog" aria-labelledby="beerModalLabel" aria-hidden="true">
+                    <div class="modal fade" id="{{ beer.beername }}" tabindex="-1" role="dialog" aria-labelledby="beerModalLabel" aria-hidden="true">
                       <div class="modal-dialog" role="document">
                         <div class="modal-content">
                           <div class="modal-header">
