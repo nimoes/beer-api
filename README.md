@@ -2,6 +2,7 @@
 
 Welcome to Malty<sup>TM</sup>, a unique beer application developed by Caleb Davenport and Min Seo. 
 
+## Introduction
 
 Why waste money on beers that you might not end up liking because of its taste, 
 hops, or low/high alcohol content? Whether you call yourself a beer connoisseur or a young college
@@ -24,6 +25,18 @@ improve our beer suggestion database. You must be at least 21 years old to use t
 We do not encourage underaged consumers!
 
 
+## Update
+# October 2, 2018
+First successful deployment on to Heroku
+
+
+
+
+## To-do's
+- Work on beer suggestion by ingesting user's list of favorites
+- Implement location widget to narrow down suggestions for users
+
+
 ## Requirements
 
 ```
@@ -36,6 +49,3 @@ $ pip install -r requirements.txt
 This project relies on two APIs to provide users information about beers and their
 respective breweries. Because API request is limited, the application uses auth
 tokens stored in `credentials.py` to supply information.
-
-## Support & Documentation
-
