@@ -1,14 +1,14 @@
 import requests
 import json
 
-from beerapp.credentials import *
+from django.conf import settings
 
 from django.http import HttpResponse, JsonResponse, HttpResponseNotFound, HttpResponseForbidden
 
 headers = {}
 headers["Content-Type"] = "application/json"
 headers["accept"] = "application/json"
-headers["x-api-key"] = api_key
+headers["x-api-key"] = settings.CREDENTIALS['RATEBEER']['API_KEY']
 
 SINGLE_BEER = """
       id, 

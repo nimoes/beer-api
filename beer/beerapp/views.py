@@ -16,7 +16,9 @@ from django.urls import reverse_lazy
 from django.views import generic
 
 # for api
-from beerapp.credentials import map_api
+from django.conf import settings
+map_api = settings.CREDENTIALS['GOOGLE']['MAP_API']
+
 
 # for likes
 from beerapp.models import *

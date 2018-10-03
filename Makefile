@@ -6,7 +6,7 @@ END=" \#\#\# \033[0m\n"
 HOST=0.0.0.0
 PORT=8080
 PYTHONPATH=beer
-DJANGO_SETTINGS=beer.settings
+DJANGO_SETTINGS=beer.settings.dev
 
 django-command = django-admin $(1) $(2) --settings $(DJANGO_SETTINGS) --pythonpath $(PYTHONPATH)
 

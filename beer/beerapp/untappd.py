@@ -1,7 +1,9 @@
 import requests
 import json
 
-from beerapp.credentials import *
+from django.conf import settings
+client_id = settings.CREDENTIALS['UNTAPPD']['CLIENT_ID']
+client_secret = settings.CREDENTIALS['UNTAPPD']['CLIENT_SECRET']
 
 auth_token = '&client_id={}&client_secret={}'.format(client_id, client_secret)
 auth_token_q = '?client_id={}&client_secret={}'.format(client_id, client_secret)
