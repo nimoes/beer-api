@@ -21,6 +21,7 @@ from beerapp import views
 
 urlpatterns = [
     path('', views.index, name='index'),
+    # path('about_us/', views.about_us, name='about_us'),
     path('admin/', admin.site.urls),
     path('search_results', views.search_view, name='search_results'),
     path('test_api/', include('beerapp.urls'), name='results'),
@@ -36,4 +37,7 @@ urlpatterns = [
     # user's likes and dislikes
     path('my_profile/', views.adds_to_favorites, name='my_profile'),
     path('remove_item/', views.remove_item, name="remove_item"),
+    
+    # project roadmap
+    path('roadmap/', views.roadmap, name="roadmap"),
 ]

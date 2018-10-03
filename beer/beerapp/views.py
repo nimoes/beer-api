@@ -34,6 +34,10 @@ def index(request):
     template = loader.get_template('index.html')
     return render(request, 'index.html')
 
+@csrf_exempt
+def roadmap(request):
+    template = loader.get_template('roadmap.html')
+    return render(request, 'roadmap.html')
 
 class SignUp(generic.CreateView):
     form_class = CustomUserCreationForm
