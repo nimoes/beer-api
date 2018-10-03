@@ -6,3 +6,7 @@ Setup Instructions:
 4) `git init` and created repo on GitHub to link two together
 5) `$ django-admin startproject beer`
 6) `$ python manage.py startapp beerapp`
+7) `$ source ./private_export_keys.sh`
+8) `$ make makerunserver`
+9) runtime.txt to define python version
+10) Procfile to tell how to run the app (for heroku)

@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 .pytest_cache/
+private_export_keys.sh
 
 # C extensions
 *.so
