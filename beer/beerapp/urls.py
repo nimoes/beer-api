@@ -12,3 +12,10 @@ urlpatterns = [
     # # openbrewery api / ratebeer api
     # path('brewery/<slug:brewery_name>/', views.brewery_list_view, name='brewery_list_view')
 ]
+
+"""
+from django.urls import path
+from django.contrib import admin
+from django.contrib.auth import views as auth_views
+
+from cryptocoins import views """
